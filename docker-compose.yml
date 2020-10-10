@@ -21,18 +21,6 @@ services:
             - cache
         ports: 
             - "9000:9000"
-        environment: 
-            APP_ENV: local
-            APP_DEBUG: 'true'
-            APP_KEY: ${APP_KEY}
-            APP_LOCALE: en
-            APP_FALLBACK_LOCALE: en
-            DB_CONNECTION: postgres
-            DB_HOST: db
-            DB_DATABASE: ${DB_DATABASE}
-            DB_USERNAME: ${DB_USERNAME}
-            DB_PASSWORD: ${DB_PASSWORD}
-            CACHE_DRIVER: redis
     db:
         image: postgres:11.2-alpine
         ports:
