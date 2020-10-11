@@ -18,8 +18,8 @@ class CreateLecturerTable extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('nip');
-            $table->integer('department_id');
-            $table->integer('user_id');
+            $table->integer('department_id')->references('id')->on('department');
+            $table->integer('user_id')->references('id')->on('user');
         });
     }
 
