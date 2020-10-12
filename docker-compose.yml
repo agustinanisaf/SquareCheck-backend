@@ -1,0 +1,40 @@
+version: "3"
+services: 
+    web_server:
+        build: docker/images/nginx
+        command: nginx -g "daemon off;"
+        links:
+            - php
+        ports: 
+            - "80:80"
+            - "443:443"
+        volumes: 
+            - ./public:/var/www/html/app/public
+    php:
+        build: docker/images/php
+        volumes: 
+            - ./:/var/www/html/app
+        working_dir: /var/www/html/app/public
+        command: php-fpm
+        links:
+            - db
+            - cache
+        ports: 
+            - "9000:9000"
+    db:
+        image: postgres:11.2-alpine
+        ports:
+            - "5432:5432"
+        restart: on-failure
+        volumes: 
+            - postgres-data:/var/lib/postgresql/data
+        environment: 
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+            POSTGRES_USER: ${DB_USERNAME}
+    cache:
+        image: redis:4.0-alpine
+        ports: 
+            - "6379:6379"
+volumes: 
+    postgres-data:
+        driver: local
