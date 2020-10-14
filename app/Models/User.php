@@ -13,13 +13,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 {
     use Authenticatable, Authorizable, HasFactory;
 
+    protected $table = "user";
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'email',
+        'name', 'email', 'token'
     ];
 
     /**
@@ -30,4 +31,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'password',
     ];
+
+    public function lecturer()
+    {
+        return $this->belongsTo('App\Models\Lecturer');
+    }
+
+    public function student()
+    {
+        return $this->belongsTo('App\Models\Student');
+    }
 }
