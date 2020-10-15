@@ -1,7 +1,7 @@
 version: "3"
 services: 
     web_server:
-        build: docker/images/nginx
+        image: nginx:alpine
         command: nginx -g "daemon off;"
         links:
             - php
@@ -10,11 +10,12 @@ services:
             - "443:443"
         volumes: 
             - ./public:/var/www/html/app/public
+            - ./docker/images/nginx:/etc/nginx/conf.d
     php:
         build: docker/images/php
         volumes: 
             - ./:/var/www/html/app
-        working_dir: /var/www/html/app/public
+        working_dir: /var/www/html/app
         command: php-fpm
         links:
             - db
