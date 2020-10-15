@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AcademicCalendarType extends Model
 {
-    protected $table = "academic_calendar_type";
+    protected $table = "academic_calendar_types";
 
     public function AcademicCalendar(){ 
         return $this->hasMany('App\Models\AcademicCalendar'); 
