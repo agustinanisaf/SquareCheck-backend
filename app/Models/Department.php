@@ -11,14 +11,16 @@ use Laravel\Lumen\Auth\Authorizable;
 
 class Department extends Model
 {
+    use HasFactory;
+
     protected $table = "department";
 
-    public function student()
+    public function students()
     {
         return $this->hasMany('App\Models\Student');
     }
 
-    public function lecturer()
+    public function lecturers()
     {
         return $this->hasMany('App\Models\Lecturer');
     }

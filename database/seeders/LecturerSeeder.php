@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Lecturer;
 use Illuminate\Database\Seeder;
-use App\Models\User;
 
-class UserSeeder extends Seeder
+class LecturerSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,8 +14,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::factory()
-                ->hasTokens(10)
+        Lecturer::factory()
                 ->make();
     }
 }

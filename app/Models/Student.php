@@ -11,6 +11,8 @@ use Laravel\Lumen\Auth\Authorizable;
 
 class Student extends Model
 {
+    use HasFactory;
+
     protected $table = "student";
 
     public function user()
@@ -21,5 +23,20 @@ class Student extends Model
     public function department()
     {
         return $this->belongsTo('App\Models\Department');
+    }
+
+    public function subject()
+    {
+        return $this->belongsToMany('App\Models\Subject')->as('student_subject');
+    }
+
+    public function schedule()
+    {
+        return $this->belongsToMany('App\Models\Schedule')
+                    ->as('student_attendance')
+                    ->withPivot([
+                        'time',
+                        'status'
+                    ]);
     }
 }

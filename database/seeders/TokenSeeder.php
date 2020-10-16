@@ -2,10 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use App\Models\Token;
 
 class TokenSeeder extends Seeder
 {
@@ -16,10 +14,9 @@ class TokenSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('tokens')->insert([
-            'user_id' => User::all()->pluck('id'),
-            'token' => Str::random(10),
-            'type' => Str::random(10)
-        ]);
+        Token::factory()
+                ->times(10)
+                ->hasUser(1)
+                ->make();
     }
 }

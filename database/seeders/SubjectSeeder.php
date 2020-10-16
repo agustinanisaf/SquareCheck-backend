@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Subject;
 use Illuminate\Database\Seeder;
-use App\Models\User;
 
-class UserSeeder extends Seeder
+class SubjectSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,8 +14,10 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::factory()
-                ->hasTokens(10)
+        Subject::factory()
+                ->hasLecturer(1)
+                ->hasSchedules(2)
+                ->hasStudents(10)
                 ->make();
     }
 }
