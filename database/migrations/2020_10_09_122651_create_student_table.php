@@ -18,8 +18,8 @@ class CreateStudentTable extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('nrp');
-            $table->integer('department_id')->references('id')->on('department');
-            $table->integer('user_id')->references('id')->on('user');
+            $table->foreignId('department_id')->constrained('department');
+            $table->foreignId('user_id')->constrained('user');
         });
     }
 
