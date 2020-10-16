@@ -11,6 +11,8 @@ use Laravel\Lumen\Auth\Authorizable;
 
 class Lecturer extends Model
 {
+    use HasFactory;
+
     protected $table = "lecturer";
 
     public function user()
@@ -21,5 +23,10 @@ class Lecturer extends Model
     public function department()
     {
         return $this->belongsTo('App\Models\Department');
+    }
+
+    public function subject()
+    {
+        return $this->hasMany('App\Models\Subject');
     }
 }
