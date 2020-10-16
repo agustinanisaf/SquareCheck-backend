@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Subject extends Model
+class Schedule extends Model
 {
     use HasFactory;
 
@@ -14,28 +14,28 @@ class Subject extends Model
      *
      * @var string
      */
-    protected $table = 'subject';
+    protected $table = "schedule";
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name'
+        'time'
     ];
 
     public function students()
     {
         return $this->belongsToMany('App\Models\Student')
-                    ->as('student_subject');
+                    ->using('App\Models\StudentAttandace')
+                    ->withPivot([
+                        'time',
+                        'status',
+                    ]);
     }
 
-    public function schedules()
+    public function subject()
     {
-        return $this->hasMany('App\Models\Schedule');
-    }
-
-    public function lecturer() {
-        return $this->belongsTo('App\Models\Lecturer');
+        return $this->belongsTo('App\Models\Subject');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLecturerTable extends Migration
+class CreateTokenTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateLecturerTable extends Migration
      */
     public function up()
     {
-        Schema::create('lecturer', function (Blueprint $table) {
+        Schema::create('token', function (Blueprint $table) {
             $table->id();
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('nip');
-            $table->foreignId('department_id')->constrained('department');
             $table->foreignId('user_id')->constrained('user');
+            $table->string('token');
+            $table->enum('type', ['forget', 'refresh'])->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ class CreateLecturerTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('lecturer');
+        Schema::dropIfExists('token');
     }
 }
