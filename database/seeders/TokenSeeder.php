@@ -19,7 +19,7 @@ class TokenSeeder extends Seeder
         DB::table('tokens')->insert([
             'user_id' => User::all()->pluck('id'),
             'token' => Str::random(10),
-            'type' => null
+            'type' => Str::random(10)
         ]);
     }
 }
