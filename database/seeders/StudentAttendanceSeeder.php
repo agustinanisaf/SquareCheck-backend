@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\StudentAttendance;
 use Illuminate\Database\Seeder;
 
 class StudentAttendanceSeeder extends Seeder
@@ -13,6 +14,7 @@ class StudentAttendanceSeeder extends Seeder
      */
     public function run()
     {
-        //
+        StudentAttendance::factory()
+                ->make();
     }
 }

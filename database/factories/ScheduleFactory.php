@@ -1,12 +1,33 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\Schedule;
-use Faker\Generator as Faker;
+use App\Models\Schedule;
+use App\Models\Subject;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
-$factory->define(Schedule::class, function (Faker $faker) {
-    return [
-        //
-    ];
-});
+class ScheduleFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Schedule::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'subject_id' => Subject::factory(),
+            'time' => $this->faker->dateTime($max = 'now', $timezone = null),
+            'start_time' => $this->faker->dateTime($max = 'now', $timezone = null),
+            'end_time' => $this->faker->dateTime($max = 'now', $timezone = null),
+        ];
+    }
+}
