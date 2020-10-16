@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAcademicCalendarTypesTable extends Migration
+class CreateAcademicCalendarTypeTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateAcademicCalendarTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('academic_calendar_types', function (Blueprint $table) {
+        Schema::create('academic_calendar_type', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->timestamps();
@@ -27,6 +27,6 @@ class CreateAcademicCalendarTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('academic_calendar_types');
+        Schema::dropIfExists('academic_calendar_type');
     }
 }
