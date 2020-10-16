@@ -20,7 +20,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'token'
+        'name', 'email', 'username'
     ];
 
     /**
@@ -40,5 +40,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function student()
     {
         return $this->belongsTo('App\Models\Student');
+    }
+
+    public function tokens()
+    {
+        return $this->belongsTo('App\Models\Token');
     }
 }
