@@ -2,19 +2,18 @@
 
 namespace Database\Factories;
 
-use App\Models\Subject;
-use App\Models\Lecturer;
+use App\Models\AcademicCalendarType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-class SubjectFactory extends Factory
+class AcademicCalendarTypeFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Subject::class;
+    protected $model = AcademicCalendarType::class;
 
     /**
      * Define the model's default state.
@@ -24,8 +23,7 @@ class SubjectFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name,
-            'lecturer_id' => Lecturer::factory(),
+            //
         ];
     }
 }

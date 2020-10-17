@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\StudentAttendance;
 use Illuminate\Database\Seeder;
 
-class StudentAttendanceSeeder extends Seeder
+class AcademicCalendarSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,7 +13,6 @@ class StudentAttendanceSeeder extends Seeder
      */
     public function run()
     {
-        StudentAttendance::factory()
-                ->make();
+        //
     }
 }

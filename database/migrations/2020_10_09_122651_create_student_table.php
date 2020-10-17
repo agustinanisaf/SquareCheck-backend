@@ -20,6 +20,7 @@ class CreateStudentTable extends Migration
             $table->string('nrp');
             $table->foreignId('department_id')->constrained('department');
             $table->foreignId('user_id')->constrained('user');
+            $table->timestamps();
         });
     }
 
