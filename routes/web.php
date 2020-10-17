@@ -40,11 +40,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         ]);
 
         $router->get('{id}/tokens', [
-            'as' => 'user.token', 'uses' => 'UserController@getToken'
+            'as' => 'user.getToken', 'uses' => 'UserController@getToken'
         ]);
 
         $router->post('{id}/tokens', [
-            'as' => 'user.token', 'uses' => 'UserController@createToken'
+            'as' => 'user.createToken', 'uses' => 'UserController@createToken'
         ]);
 
         // TODO: Add Student and Lecturer (and Admin, based on new Database design)
