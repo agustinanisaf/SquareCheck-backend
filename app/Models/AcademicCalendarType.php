@@ -16,7 +16,4 @@ class AcademicCalendarType extends Model
 
     protected $table = "academic_calendar_type";
 
-    public function AcademicCalendar(){ 
-        return $this->hasMany('App\Models\AcademicCalendar'); 
-    }
 }

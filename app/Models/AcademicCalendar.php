@@ -15,7 +15,8 @@ class AcademicCalendar extends Model
 
     protected $table = "academic_calendar";
     
-    public function AcademicCalendarType(){ 
+    public function type()
+    {
         return $this->belongsTo('App\Models\AcademicCalendarType');
     }
 }
