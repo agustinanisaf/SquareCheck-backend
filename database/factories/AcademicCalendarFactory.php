@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\AcademicCalendar;
+use App\Models\AcademicCalendarType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -23,7 +24,10 @@ class AcademicCalendarFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'name' => $this->faker->name,
+            'description' => $this->faker->paragraph(2),
+            'type' => AcademicCalendarType::factory(),
+            'date' => $this->faker->date,
         ];
     }
 }
