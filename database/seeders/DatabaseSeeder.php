@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
             ScheduleSeeder::class,
             SubjectSeeder::class,
             StudentAttendanceSeeder::class,
+            AcademicCalendarTypeSeeder::class,
+            AcademicCalendarSeeder::class
         ]);
     }
 }
