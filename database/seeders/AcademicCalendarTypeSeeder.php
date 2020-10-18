@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\AcademicCalendarType;
 use Illuminate\Database\Seeder;
 
 class AcademicCalendarTypeSeeder extends Seeder
@@ -13,6 +14,6 @@ class AcademicCalendarTypeSeeder extends Seeder
      */
     public function run()
     {
-        //
+        AcademicCalendarType::factory()->make();
     }
 }

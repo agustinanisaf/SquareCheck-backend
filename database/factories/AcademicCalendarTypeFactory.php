@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\AcademicCalendarType;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 class AcademicCalendarTypeFactory extends Factory
 {
@@ -23,7 +22,7 @@ class AcademicCalendarTypeFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'name' => $this->faker->name
         ];
     }
 }
