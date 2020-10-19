@@ -15,6 +15,6 @@ class StudentAttendanceSeeder extends Seeder
     public function run()
     {
         StudentAttendance::factory()
-                ->make();
+                ->create();
     }
 }

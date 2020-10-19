@@ -15,8 +15,7 @@ class CreateLecturerTable extends Migration
     {
         Schema::create('lecturer', function (Blueprint $table) {
             $table->id();
-            $table->string('first_name');
-            $table->string('last_name');
+            $table->string('name');
             $table->string('nip');
             $table->foreignId('department_id')->constrained('department');
             $table->foreignId('user_id')->constrained('user');

@@ -16,6 +16,6 @@ class UserSeeder extends Seeder
     {
         User::factory()
                 ->hasTokens(10)
-                ->make();
+                ->create();
     }
 }

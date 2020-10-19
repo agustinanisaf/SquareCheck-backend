@@ -17,7 +17,7 @@ class Student extends Model
 
     public function user()
     {
-        return $this->hasOne('App\Models\User');
+        return $this->belongsTo('App\Models\User');
     }
 
     public function department()
@@ -30,13 +30,18 @@ class Student extends Model
         return $this->belongsToMany('App\Models\Subject')->as('student_subject');
     }
 
-    public function schedule()
+    public function attendances()
     {
-        return $this->belongsToMany('App\Models\Schedule')
+        return $this->belongsToMany(
+                        'App\Models\Schedule',
+                        'student_attendance',
+                        'student_id',
+                        'schedule_id'
+                    )
                     ->as('student_attendance')
                     ->withPivot([
                         'time',
-                        'status'
+                        'status',
                     ]);
     }
 }
