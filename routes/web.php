@@ -39,70 +39,106 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         $router->post('{id}/tokens', [
             'as' => 'user.createToken', 'uses' => 'UserController@createToken' ]);
+    });
 
-        // TODO: Add Student and Lecturer (and Admin, based on new Database design)
-		});
-		
-		
-		$router->group(['prefix' => 'student'], function () use ($router) {
-			$router->get('', [
-				'as' => 'student.index', 'uses' => 'StudentController@index' ]);
+    $router->group(['prefix' => 'students'], function () use ($router) {
+        $router->get('', [
+            'as' => 'student.index', 'uses' => 'StudentController@index' ]);
 
-			$router->get('{id}', [
-					'as' => 'student.show', 'uses' => 'StudentController@show' ]);
-		});
+        $router->get('{id}', [
+            'as' => 'student.show', 'uses' => 'StudentController@show' ]);
 
+        $router->get('{id}/user', [
+            'as' => 'student.getUser', 'uses' => 'StudentController@getUser' ]);
 
-		$router->group(['prefix' => 'lecturer'], function () use ($router) {
-			$router->get('', [
-				'as' => 'lecturer.index', 'uses' => 'LecturerController@index' ]);
+        $router->get('{id}/department', [
+            'as' => 'student.getDepartment', 'uses' => 'StudentController@getDepartment' ]);
+        
+        $router->get('{id}/subjects', [
+            'as' => 'student.getSubjects', 'uses' => 'StudentController@getSubjects' ]);
+        
+        $router->get('{id}/attendances', [
+            'as' => 'student.getAttendances', 'uses' => 'StudentController@getAttendances' ]);
+    });
 
-			$router->get('{id}', [
-					'as' => 'lecturer.show', 'uses' => 'LecturerController@show' ]);
-		});
+    $router->group(['prefix' => 'lecturers'], function () use ($router) {
+        $router->get('', [
+            'as' => 'lecturer.index', 'uses' => 'LecturerController@index' ]);
 
+        $router->get('{id}', [
+            'as' => 'lecturer.show', 'uses' => 'LecturerController@show' ]);
 
-		$router->group(['prefix' => 'department'], function () use ($router) {
-			$router->get('', [
-				'as' => 'department.index', 'uses' => 'DepartmentController@index' ]);
+        $router->get('{id}/user', [
+            'as' => 'lecturer.getUser', 'uses' => 'LecturerController@getUser' ]);
+    
+        $router->get('{id}/department', [
+            'as' => 'lecturer.getDepartment', 'uses' => 'LecturerController@getDepartment' ]);
+        
+        $router->get('{id}/subjects', [
+            'as' => 'lecturer.getSubjects', 'uses' => 'LecturerController@getSubjects' ]);
+    });
 
-			$router->get('{id}', [
-					'as' => 'department.show', 'uses' => 'DepartmentController@show' ]);
-		});
+    $router->group(['prefix' => 'departments'], function () use ($router) {
+        $router->get('', [
+            'as' => 'department.index', 'uses' => 'DepartmentController@index' ]);
 
+        $router->get('{id}', [
+            'as' => 'department.show', 'uses' => 'DepartmentController@show' ]);
+        
+        $router->get('{id}/students', [
+            'as' => 'department.getStudents', 'uses' => 'DepartmentController@getStudents' ]);
 
-		$router->group(['prefix' => 'schedule'], function () use ($router) {
-			$router->get('', [
-				'as' => 'schedule.index', 'uses' => 'ScheduleController@index' ]);
+        $router->get('{id}/lecturers', [
+            'as' => 'department.getLecturers', 'uses' => 'DepartmentController@getLecturers' ]);
+    });
 
-			$router->get('{id}', [
-					'as' => 'schedule.show', 'uses' => 'ScheduleController@show' ]);
-		});
+    $router->group(['prefix' => 'schedules'], function () use ($router) {
+        $router->get('', [
+            'as' => 'schedule.index', 'uses' => 'ScheduleController@index' ]);
 
+        $router->get('{id}', [
+            'as' => 'schedule.show', 'uses' => 'ScheduleController@show' ]);
 
-		$router->group(['prefix' => 'subject'], function () use ($router) {
-			$router->get('', [
-				'as' => 'subject.index', 'uses' => 'SubjectController@index' ]);
+        $router->get('{id}/subject', [
+            'as' => 'schedule.getSubject', 'uses' => 'ScheduleController@getSubject' ]);
 
-			$router->get('{id}', [
-					'as' => 'subject.show', 'uses' => 'SubjectController@show' ]);
-		});
+        $router->get('{id}/attendances', [
+            'as' => 'schedule.getAttendances', 'uses' => 'ScheduleController@getAttendances' ]);
 
+        $router->post('{id}/attend', [
+            'as' => 'schedule.attend', 'uses' => 'ScheduleController@attend' ]);
+    });
 
-		$router->group(['prefix' => 'academicCalendar'], function () use ($router) {
-			$router->get('', [
-				'as' => 'academicCalendar.index', 'uses' => 'AcademicCalendarController@index' ]);
+    $router->group(['prefix' => 'subjects'], function () use ($router) {
+        $router->get('', [
+            'as' => 'subject.index', 'uses' => 'SubjectController@index' ]);
 
-			$router->get('{id}', [
-					'as' => 'academicCalendar.show', 'uses' => 'AcademicCalendarController@show' ]);
-		});
+        $router->get('{id}', [
+            'as' => 'subject.show', 'uses' => 'SubjectController@show' ]);
 
+        $router->get('{id}/students', [
+            'as' => 'subject.getStudents', 'uses' => 'SubjectController@getStudents']);
 
-		$router->group(['prefix' => 'academicCalendarType'], function () use ($router) {
-			$router->get('', [
-				'as' => 'academicCalendarType.index', 'uses' => 'academicCalendarTypeController@index' ]);
+        $router->get('{id}/lecturer', [
+            'as' => 'subject.getLecturer', 'uses' => 'SubjectController@getLecturer']);
 
-			$router->get('{id}', [
-					'as' => 'academicCalendarType.show', 'uses' => 'academicCalendarTypeController@show' ]);
-		});
+        $router->get('{id}/schedules', [
+            'as' => 'subject.getSchedules', 'uses' => 'SubjectController@getSchedules']);
+    });
+
+    $router->group(['prefix' => 'academic-calendars'], function () use ($router) {
+        $router->group(['prefix' => 'types'], function () use ($router) {
+            $router->get('', [
+                'as' => 'academicCalendarType.index', 'uses' => 'AcademicCalendarTypeController@index' ]);
+    
+            $router->get('{id}', [
+                'as' => 'academicCalendarType.show', 'uses' => 'AcademicCalendarTypeController@show' ]);
+        });
+
+        $router->get('', [
+            'as' => 'academicCalendar.index', 'uses' => 'AcademicCalendarController@index' ]);
+
+        $router->get('{id}', [
+            'as' => 'academicCalendar.show', 'uses' => 'AcademicCalendarController@show' ]);
+    });
 });
