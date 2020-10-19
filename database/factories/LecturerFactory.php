@@ -25,8 +25,7 @@ class LecturerFactory extends Factory
     public function definition()
     {
         return [
-            'first_name' => $this->faker->name,
-            'last_name' => $this->faker->name,
+            'name' => $this->faker->name,
             'nip' => Str::random(10),
             'department_id' => Department::factory(),
             'user_id' => User::factory()

@@ -28,8 +28,7 @@ class StudentFactory extends Factory
         $faker_id = Faker::create('id_ID');
 
         return [
-            'first_name' => $faker_id->name,
-            'last_name' => $faker_id->name,
+            'name' => $faker_id->name,
             'nrp' => Str::random(10),
             'department_id' => Department::factory(),
             'user_id' => User::factory()

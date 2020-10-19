@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class StudentAttendance extends Model
 {
+    protected $primaryKey = ['schedule_id', 'student_id'];
+    public $incrementing = false;
     use HasFactory;
 
     /**

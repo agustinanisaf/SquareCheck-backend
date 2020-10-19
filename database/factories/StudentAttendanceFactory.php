@@ -28,7 +28,7 @@ class StudentAttendanceFactory extends Factory
             'schedule_id' => Schedule::factory(),
             'student_id' => Student::factory(),
             'time' => $this->faker->dateTime($max = 'now', $timezone = null),
-            'status' => $this->faker->randomElement(['hadir', 'izin', 'terlambat', 'alpha']),
+            'status' => $this->faker->randomElement(['hadir', 'izin', 'terlambat', 'alpa']),
         ];
     }
 }
