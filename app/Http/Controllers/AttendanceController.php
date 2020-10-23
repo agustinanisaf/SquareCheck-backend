@@ -36,7 +36,6 @@ class AttendanceController extends Controller
      */
     public function store(Request $request)
     {
-			
     }
 
     /**
@@ -47,15 +46,15 @@ class AttendanceController extends Controller
      */
     public function show($id)
     {
-      try {
-					return response()->json(Attendance::findOrFail($id));
-			} catch (ModelNotFoundException $e) {
-					return response()->json([
-							'code' => 404,
-							'message' => 'Not Found',
-							'description' => 'Attendance Student ' . $id . ' not found.'
-					], 404);
-			}
+        try {
+            return response()->json(Attendance::findOrFail($id));
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'code' => 404,
+                'message' => 'Not Found',
+                'description' => 'Attendance Student ' . $id . ' not found.'
+            ], 404);
+        }
     }
 
     /**
@@ -66,7 +65,6 @@ class AttendanceController extends Controller
      */
     public function edit($id)
     {
-			
     }
 
     /**

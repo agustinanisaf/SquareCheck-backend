@@ -15,7 +15,7 @@ class AcademicCalendarController extends Controller
      */
     public function index()
     {
-				return response()->json(Calendar::all());
+        return response()->json(Calendar::all());
     }
 
     /**
@@ -47,15 +47,15 @@ class AcademicCalendarController extends Controller
      */
     public function show($id)
     {
-			try {
-					return response()->json(Calendar::findOrFail($id));
-			} catch (ModelNotFoundException $e) {
-					return response()->json([
-							'code' => 404,
-							'message' => 'Not Found',
-							'description' => 'Academic Calendar ' . $id . ' not found.'
-					], 404);
-			}
+        try {
+            return response()->json(Calendar::findOrFail($id));
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'code' => 404,
+                'message' => 'Not Found',
+                'description' => 'Academic Calendar ' . $id . ' not found.'
+            ], 404);
+        }
     }
 
     /**
