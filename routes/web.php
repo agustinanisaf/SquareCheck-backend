@@ -33,12 +33,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         $router->delete('{id}', [
             'as' => 'user.destroy', 'uses' => 'UserController@destroy' ]);
-
-        $router->get('{id}/tokens', [
-            'as' => 'user.getToken', 'uses' => 'UserController@getToken' ]);
-
-        $router->post('{id}/tokens', [
-            'as' => 'user.createToken', 'uses' => 'UserController@createToken' ]);
     });
 
     $router->group(['prefix' => 'students'], function () use ($router) {
@@ -105,8 +99,17 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('{id}/attendances', [
             'as' => 'schedule.getAttendances', 'uses' => 'ScheduleController@getAttendances' ]);
 
+        $router->get('summarize', [
+            'as' => 'schedule.summarize', 'uses' => 'ScheduleController@summarize' ]);
+
         $router->post('{id}/attend', [
             'as' => 'schedule.attend', 'uses' => 'ScheduleController@attend' ]);
+
+        $router->post('{id}/open', [
+            'as' => 'schedule.open', 'uses' => 'ScheduleController@open' ]);
+
+        $router->post('{id}/close', [
+            'as' => 'schedule.close', 'uses' => 'ScheduleController@close' ]);
     });
 
     $router->group(['prefix' => 'subjects'], function () use ($router) {
@@ -140,5 +143,19 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         $router->get('{id}', [
             'as' => 'academicCalendar.show', 'uses' => 'AcademicCalendarController@show' ]);
+    });
+
+    $router->group(['prefix' => 'auth'], function () use ($router) {
+        $router->post('login', [
+            'as' => 'auth.login', 'uses' => 'AuthController@login' ]);
+    
+        $router->post('logout', [
+            'as' => 'auth.logout', 'uses' => 'AuthController@logout' ]);
+    
+        $router->post('refresh', [
+            'as' => 'auth.refresh', 'uses' => 'AuthController@refresh' ]);
+    
+        $router->post('me', [
+            'as' => 'auth.me', 'uses' => 'AuthController@me' ]);
     });
 });
