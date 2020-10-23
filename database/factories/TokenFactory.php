@@ -26,7 +26,7 @@ class TokenFactory extends Factory
         return [
             'user_id' => User::factory(),
             'token' => Str::random(10),
-            'type' => $this->faker->randomElement(['forget' ,'refresh']),
+            'type' => $this->faker->randomElement(['forget', 'refresh', 'fcm_token']),
         ];
     }
 }

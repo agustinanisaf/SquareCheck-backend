@@ -7,9 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class StudentAttendance extends Model
 {
-    protected $primaryKey = ['schedule_id', 'student_id'];
-    public $incrementing = false;
     use HasFactory;
+
+    /**
+     * The primary key of the corresponding model.
+     *
+     * @var array
+     */
+    protected $primaryKey = ['schedule_id', 'student_id'];
+
+    /**
+     * The incrementing mode for primary key of the corresponding model.
+     *
+     * @var array
+     */
+    public $incrementing = false;
 
     /**
      * The name of the factory's corresponding model.
