@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Token;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {

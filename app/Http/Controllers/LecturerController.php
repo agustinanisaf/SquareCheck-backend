@@ -47,15 +47,15 @@ class LecturerController extends Controller
      */
     public function show($id)
     {
-			try {
-					return response()->json(Lecturer::findOrFail($id));
-			} catch (ModelNotFoundException $e) {
-					return response()->json([
-							'code' => 404,
-							'message' => 'Not Found',
-							'description' => 'Lecturer ' . $id . ' not found.'
-					], 404);
-			}
+        try {
+            return response()->json(Lecturer::findOrFail($id));
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'code' => 404,
+                'message' => 'Not Found',
+                'description' => 'Lecturer ' . $id . ' not found.'
+            ], 404);
+        }
     }
 
     /**

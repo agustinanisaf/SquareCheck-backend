@@ -47,15 +47,15 @@ class SubjectController extends Controller
      */
     public function show($id)
     {
-			try {
-					return response()->json(Subject::findOrFail($id));
-			} catch (ModelNotFoundException $e) {
-					return response()->json([
-							'code' => 404,
-							'message' => 'Not Found',
-							'description' => 'Subject ' . $id . ' not found.'
-					], 404);
-			}
+        try {
+            return response()->json(Subject::findOrFail($id));
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'code' => 404,
+                'message' => 'Not Found',
+                'description' => 'Subject ' . $id . ' not found.'
+            ], 404);
+        }
     }
 
     /**

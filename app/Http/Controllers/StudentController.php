@@ -16,8 +16,7 @@ class StudentController extends Controller
      */
     public function index()
     {
-				// return response()->json(Student::all());
-				return new StudentResource(Student::all());
+        return response()->json(Student::all());
     }
 
     /**
@@ -49,15 +48,15 @@ class StudentController extends Controller
      */
     public function show($id)
     {
-			try {
-					return response()->json(Student::findOrFail($id));
-			} catch (ModelNotFoundException $e) {
-					return response()->json([
-							'code' => 404,
-							'message' => 'Not Found',
-							'description' => 'Student ' . $id . ' not found.'
-					], 404);
-			}
+        try {
+            return response()->json(Student::findOrFail($id));
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'code' => 404,
+                'message' => 'Not Found',
+                'description' => 'Student ' . $id . ' not found.'
+            ], 404);
+        }
     }
 
     /**
