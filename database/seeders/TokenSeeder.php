@@ -15,8 +15,6 @@ class TokenSeeder extends Seeder
     public function run()
     {
         Token::factory()
-                ->times(10)
-                ->hasUser(1)
-                ->make();
+                ->create();
     }
 }

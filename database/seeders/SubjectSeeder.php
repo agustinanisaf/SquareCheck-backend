@@ -18,6 +18,6 @@ class SubjectSeeder extends Seeder
                 ->hasLecturer(1)
                 ->hasSchedules(2)
                 ->hasStudents(10)
-                ->make();
+                ->create();
     }
 }

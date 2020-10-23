@@ -16,6 +16,6 @@ class AcademicCalendarSeeder extends Seeder
     public function run()
     {
         AcademicCalendar::factory()
-            ->make();
+            ->create();
     }
 }

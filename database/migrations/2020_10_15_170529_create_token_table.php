@@ -17,7 +17,7 @@ class CreateTokenTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('user');
             $table->string('token');
-            $table->enum('type', ['forget', 'refresh'])->nullable();
+            $table->enum('type', ['forget', 'refresh', 'fcm_token']);
             $table->timestamps();
         });
     }

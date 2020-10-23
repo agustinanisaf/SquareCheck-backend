@@ -26,8 +26,13 @@ class Schedule extends Model
 
     public function students()
     {
-        return $this->belongsToMany('App\Models\Student')
-                    ->using('App\Models\StudentAttandace')
+        return $this->belongsToMany(
+                        'App\Models\Student',
+                        'student_attendance',
+                        'schedule_id',
+                        'student_id'
+                    )
+                    ->as('student_attendance')
                     ->withPivot([
                         'time',
                         'status',

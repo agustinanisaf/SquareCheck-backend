@@ -17,7 +17,7 @@ class Lecturer extends Model
 
     public function user()
     {
-        return $this->hasOne('App\Models\User');
+        return $this->belongsTo('App\Models\User');
     }
 
     public function department()
@@ -25,7 +25,7 @@ class Lecturer extends Model
         return $this->belongsTo('App\Models\Department');
     }
 
-    public function subject()
+    public function subjects()
     {
         return $this->hasMany('App\Models\Subject');
     }

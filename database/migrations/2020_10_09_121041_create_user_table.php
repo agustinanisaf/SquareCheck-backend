@@ -17,13 +17,10 @@ class CreateUserTable extends Migration
         Schema::create('user', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('username', 150);
             $table->string('email')->unique();
             $table->string('password');
-            $table->timestamp('email_verified_at')
-                  ->nullable()
-                  ->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->boolean('is_admin');
+            $table->enum('role', ['admin', 'lecturer', 'student'])
+                ->default('student');
             $table->string('photo');
             $table->timestamps();
         });

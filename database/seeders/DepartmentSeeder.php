@@ -17,6 +17,6 @@ class DepartmentSeeder extends Seeder
         Department::factory()
                 ->hasStudents(10)
                 ->hasLecturers(10)
-                ->make();
+                ->create();
     }
 }
