@@ -49,14 +49,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             'as' => 'student.show', 'uses' => 'StudentController@show'
         ]);
 
-        $router->get('{id}/user', [
-            'as' => 'student.getUser', 'uses' => 'StudentController@getUser'
-        ]);
-
-        $router->get('{id}/department', [
-            'as' => 'student.getDepartment', 'uses' => 'StudentController@getDepartment'
-        ]);
-
         $router->get('{id}/subjects', [
             'as' => 'student.getSubjects', 'uses' => 'StudentController@getSubjects'
         ]);
@@ -75,20 +67,16 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             'as' => 'lecturer.show', 'uses' => 'LecturerController@show'
         ]);
 
-        $router->get('{id}/user', [
-            'as' => 'lecturer.getUser', 'uses' => 'LecturerController@getUser'
-        ]);
-
-        $router->get('{id}/department', [
-            'as' => 'lecturer.getDepartment', 'uses' => 'LecturerController@getDepartment'
-        ]);
-
         $router->get('{id}/subjects', [
             'as' => 'lecturer.getSubjects', 'uses' => 'LecturerController@getSubjects'
         ]);
     });
 
     $router->group(['prefix' => 'departments'], function () use ($router) {
+        $router->get('students', [
+            'as' => 'department.getAllStudents', 'uses' => 'DepartmentController@getAllStudents'
+        ]);
+        
         $router->get('', [
             'as' => 'department.index', 'uses' => 'DepartmentController@index'
         ]);
@@ -107,6 +95,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     });
 
     $router->group(['prefix' => 'schedules'], function () use ($router) {
+        $router->get('summarize', [
+            'as' => 'schedule.summarize', 'uses' => 'ScheduleController@summarize'
+        ]);
+
         $router->get('', [
             'as' => 'schedule.index', 'uses' => 'ScheduleController@index'
         ]);
@@ -121,10 +113,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         $router->get('{id}/attendances', [
             'as' => 'schedule.getAttendances', 'uses' => 'ScheduleController@getAttendances'
-        ]);
-
-        $router->get('summarize', [
-            'as' => 'schedule.summarize', 'uses' => 'ScheduleController@summarize'
         ]);
 
         $router->post('{id}/attend', [
@@ -151,10 +139,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         $router->get('{id}/students', [
             'as' => 'subject.getStudents', 'uses' => 'SubjectController@getStudents'
-        ]);
-
-        $router->get('{id}/lecturer', [
-            'as' => 'subject.getLecturer', 'uses' => 'SubjectController@getLecturer'
         ]);
 
         $router->get('{id}/schedules', [

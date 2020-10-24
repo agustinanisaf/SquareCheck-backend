@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\Token;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return response()->json(User::all());
+        return UserResource::collection(User::all());
     }
 
     /**
@@ -48,7 +49,7 @@ class UserController extends Controller
     public function show($id)
     {
         try {
-            return response()->json(User::findOrFail($id));
+            return new UserResource(User::findOrFail($id));
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'code' => 404,
@@ -108,15 +109,15 @@ class UserController extends Controller
     }
 
     /**
-     * Display a listing of App\Models\Token from App\Models\User resource.
+     * Display a listing of App\Models\Token from App\Models\User instances.
      *
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function getToken($id)
+    public function getTokens(int $id)
     {
         try {
-            $tokens = User::findOrFail($id)->tokens();
+            $tokens = User::findOrFail($id)->tokens;
 
             return response()->json($tokens);
         } catch (ModelNotFoundException $e) {
@@ -129,13 +130,13 @@ class UserController extends Controller
     }
 
     /**
-     * Create a App\Models\Token for App\Models\User resource.
+     * Create a App\Models\Token for App\Models\User instances.
      * 
      * @param  \Illuminate\Http\Request  $request
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function createToken(Request $request, $id)
+    public function createToken(Request $request, int $id)
     {
         // TODO: Fix sesuai field Token
         $this->validate($request, [

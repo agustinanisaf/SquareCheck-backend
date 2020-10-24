@@ -15,11 +15,11 @@ class AcademicCalendarResource extends JsonResource
     public function toArray($request)
     {
         return [
-					'id' => $this->id,
-					'name' => $this->name,
-					'description' => $this->description,
-					'type' => $this->type,
-					'date' => $this->date,					
-				];
+            'id' => $this->id,
+            'name' => $this->name,
+            'description' => $this->description,
+            'type' => $this->types->name,
+            'date' => $this->date,
+        ];
     }
 }

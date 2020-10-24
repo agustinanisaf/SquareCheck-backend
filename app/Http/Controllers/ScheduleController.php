@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\Schedule;
+use App\Http\Resources\ScheduleResource;
+use App\Http\Resources\StudentAttendanceResource;
 
 class ScheduleController extends Controller
 {
@@ -15,17 +17,7 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        return response()->json(Schedule::all());
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return ScheduleResource::collection(Schedule::all());
     }
 
     /**
@@ -48,7 +40,7 @@ class ScheduleController extends Controller
     public function show($id)
     {
         try {
-            return response()->json(Schedule::findOrFail($id));
+            return new ScheduleResource(Schedule::findOrFail($id));
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'code' => 404,
@@ -56,17 +48,6 @@ class ScheduleController extends Controller
                 'description' => 'Schedule ' . $id . ' not found.'
             ], 404);
         }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
@@ -90,5 +71,26 @@ class ScheduleController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Display a listing of App\Models\Student from App\Models\Schedule instances.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function getAttendances(int $id)
+    {
+        try {
+            $students = Schedule::findOrFail($id)->students;
+
+            return StudentAttendanceResource::collection($students);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'code' => 404,
+                'message' => 'Not Found',
+                'description' => 'Schedule ' . $id . ' not found.'
+            ], 404);
+        }
     }
 }

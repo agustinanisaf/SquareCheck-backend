@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\LecturerResource;
 use Illuminate\Http\Request;
 use App\Models\Lecturer;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -15,17 +16,7 @@ class LecturerController extends Controller
      */
     public function index()
     {
-        return response()->json(Lecturer::all());
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return LecturerResource::collection(Lecturer::all());
     }
 
     /**
@@ -48,7 +39,7 @@ class LecturerController extends Controller
     public function show($id)
     {
         try {
-            return response()->json(Lecturer::findOrFail($id));
+            return new LecturerResource(Lecturer::findOrFail($id));
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'code' => 404,
@@ -56,17 +47,6 @@ class LecturerController extends Controller
                 'description' => 'Lecturer ' . $id . ' not found.'
             ], 404);
         }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
@@ -90,5 +70,26 @@ class LecturerController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Display a listing of App\Models\Subject from App\Models\Lecturer instances.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function getSubjects(int $id)
+    {
+        try {
+            $subjects = Lecturer::findOrFail($id)->subjects;
+
+            return response()->json($subjects);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'code' => 404,
+                'message' => 'Not Found',
+                'description' => 'Student ' . $id . ' not found.'
+            ], 404);
+        }
     }
 }

@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ScheduleResource extends JsonResource
+class ScheduleAttendanceResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -22,7 +22,12 @@ class ScheduleResource extends JsonResource
             ],
             'time' => $this->time,
             'start_time' => $this->start_time,
-            'end_time' => $this->end_time
+            'end_time' => $this->end_time,
+            'attendance' => [
+                'student_id' => $this->student_attendance->student_id,
+                'time' => $this->student_attendance->time,
+                'status' => $this->student_attendance->status,
+            ]
         ];
     }
 }
