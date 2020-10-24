@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\Token;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return response()->json(User::all());
+        return UserResource::collection(User::all());
     }
 
     /**
@@ -48,7 +49,7 @@ class UserController extends Controller
     public function show($id)
     {
         try {
-            return response()->json(User::findOrFail($id));
+            return new UserResource(User::findOrFail($id));
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'code' => 404,
