@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\AcademicCalendarResource;
 use Illuminate\Http\Request;
 use App\Models\AcademicCalendar as Calendar;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -15,17 +16,7 @@ class AcademicCalendarController extends Controller
      */
     public function index()
     {
-        return response()->json(Calendar::all());
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return AcademicCalendarResource::collection(Calendar::all());
     }
 
     /**
@@ -48,7 +39,7 @@ class AcademicCalendarController extends Controller
     public function show($id)
     {
         try {
-            return response()->json(Calendar::findOrFail($id));
+            return new AcademicCalendarResource(Calendar::findOrFail($id));
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'code' => 404,
@@ -56,17 +47,6 @@ class AcademicCalendarController extends Controller
                 'description' => 'Academic Calendar ' . $id . ' not found.'
             ], 404);
         }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**

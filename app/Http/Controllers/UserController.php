@@ -108,15 +108,15 @@ class UserController extends Controller
     }
 
     /**
-     * Display a listing of App\Models\Token from App\Models\User resource.
+     * Display a listing of App\Models\Token from App\Models\User instances.
      *
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function getToken($id)
+    public function getTokens(int $id)
     {
         try {
-            $tokens = User::findOrFail($id)->tokens();
+            $tokens = User::findOrFail($id)->tokens;
 
             return response()->json($tokens);
         } catch (ModelNotFoundException $e) {
@@ -129,13 +129,13 @@ class UserController extends Controller
     }
 
     /**
-     * Create a App\Models\Token for App\Models\User resource.
+     * Create a App\Models\Token for App\Models\User instances.
      * 
      * @param  \Illuminate\Http\Request  $request
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function createToken(Request $request, $id)
+    public function createToken(Request $request, int $id)
     {
         // TODO: Fix sesuai field Token
         $this->validate($request, [

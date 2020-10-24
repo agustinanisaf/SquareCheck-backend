@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\StudentResource;
+use App\Http\Resources\SubjectResource;
+use App\Http\Resources\ScheduleResource;
 use Illuminate\Http\Request;
 use App\Models\Subject;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -15,17 +18,7 @@ class SubjectController extends Controller
      */
     public function index()
     {
-        return response()->json(Subject::all());
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return SubjectResource::collection(Subject::all());
     }
 
     /**
@@ -48,7 +41,7 @@ class SubjectController extends Controller
     public function show($id)
     {
         try {
-            return response()->json(Subject::findOrFail($id));
+            return new SubjectResource(Subject::findOrFail($id));
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'code' => 404,
@@ -56,17 +49,6 @@ class SubjectController extends Controller
                 'description' => 'Subject ' . $id . ' not found.'
             ], 404);
         }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
@@ -90,5 +72,68 @@ class SubjectController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * Display a listing of App\Models\Student from App\Models\Subject instances.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function getStudents(int $id)
+    {
+        try {
+            $students = Subject::findOrFail($id)->students;
+
+            return StudentResource::collection($students);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'code' => 404,
+                'message' => 'Not Found',
+                'description' => 'Subject ' . $id . ' not found.'
+            ], 404);
+        }
+    }
+
+    /**
+     * Display an instance of App\Models\Lecturer from App\Models\Subject instances.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function getLecturer(int $id)
+    {
+        try {
+            $lecturer = Subject::findOrFail($id)->lecturer;
+
+            return response()->json($lecturer);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'code' => 404,
+                'message' => 'Not Found',
+                'description' => 'Subject ' . $id . ' not found.'
+            ], 404);
+        }
+    }
+
+    /**
+     * Display a listing of App\Models\Schedule from App\Models\Subject instances.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function getSchedules(int $id)
+    {
+        try {
+            $schedules = Subject::findOrFail($id)->schedules;
+
+            return ScheduleResource::collection($schedules);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'code' => 404,
+                'message' => 'Not Found',
+                'description' => 'Subject ' . $id . ' not found.'
+            ], 404);
+        }
     }
 }
