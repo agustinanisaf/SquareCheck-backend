@@ -15,10 +15,12 @@ class StudentAttendanceResource extends JsonResource
     public function toArray($request)
     {
         return [
-					'schedule_id' => $this->schedule_id,
-					'student_id' => $this->student_id,
-					'time' => $this->time,
-					'status' => $this->status
-				];
+            'student' => [
+                'id' => $this->id,
+                'name' => $this->name
+            ],
+            'time' => $this->student_attendance->time,
+            'status' => $this->student_attendance->status
+        ];
     }
 }
