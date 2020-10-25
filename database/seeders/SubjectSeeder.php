@@ -17,7 +17,6 @@ class SubjectSeeder extends Seeder
         Subject::factory()
             ->hasLecturer(1)
             ->hasSchedules(2)
-            ->hasStudents(10)
             ->create();
     }
 }

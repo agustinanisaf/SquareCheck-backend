@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Student;
+use App\Models\Subject;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Resources\StudentResource;
 use App\Http\Resources\SubjectResource;
@@ -83,7 +84,10 @@ class StudentController extends Controller
     public function getSubjects(int $id)
     {
         try {
-            $subjects = Student::findOrFail($id)->subjects;
+            $subjects = Subject::query()
+                ->leftJoin('student', 'student.classroom_id', '=', 'subject.classroom_id')
+                ->where('student.id', '=', $id)
+                ->get(['subject.*']);
 
             return SubjectResource::collection($subjects);
         } catch (ModelNotFoundException $e) {

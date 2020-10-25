@@ -7,9 +7,10 @@ use App\Models\Department;
 use App\Models\Student;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
-use App\Http\Resources\DepartmentCollection;
 use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\DepartmentStudentResource;
+use App\Http\Resources\LecturerResource;
+use App\Http\Resources\StudentResource;
 
 class DepartmentController extends Controller
 {
@@ -87,7 +88,7 @@ class DepartmentController extends Controller
         try {
             $students = Department::findOrFail($id)->students;
 
-            return response()->json($students);
+            return StudentResource::collection($students);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'code' => 404,
@@ -120,7 +121,7 @@ class DepartmentController extends Controller
         try {
             $lecturers = Department::findOrFail($id)->lecturers;
 
-            return response()->json($lecturers);
+            return LecturerResource::collection($lecturers);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'code' => 404,

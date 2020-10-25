@@ -20,7 +20,8 @@ class SubjectResource extends JsonResource
             'lecturer' => [
                 'id' => $this->lecturer->id,
                 'name' => $this->lecturer->name,
-            ]
+            ],
+            'classroom' => new ClassroomResource($this->classroom),
         ];
     }
 }

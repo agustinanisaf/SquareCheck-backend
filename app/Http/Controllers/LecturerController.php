@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\LecturerResource;
 use Illuminate\Http\Request;
 use App\Models\Lecturer;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Http\Resources\LecturerResource;
+use App\Http\Resources\SubjectResource;
 
 class LecturerController extends Controller
 {
@@ -83,7 +84,7 @@ class LecturerController extends Controller
         try {
             $subjects = Lecturer::findOrFail($id)->subjects;
 
-            return response()->json($subjects);
+            return SubjectResource::collection($subjects);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'code' => 404,
