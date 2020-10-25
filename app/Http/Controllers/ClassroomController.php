@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Department;
-use App\Models\Student;
+use App\Models\Classroom;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\DB;
-use App\Http\Resources\DepartmentResource;
-use App\Http\Resources\DepartmentStudentResource;
-use App\Http\Resources\LecturerResource;
+use Illuminate\Http\Request;
+use App\Http\Resources\ClassroomResource;
 use App\Http\Resources\StudentResource;
+use App\Http\Resources\SubjectResource;
 
-class DepartmentController extends Controller
+class ClassroomController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -21,7 +18,7 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        return DepartmentResource::collection(Department::all());
+        return ClassroomResource::collection(Classroom::all());
     }
 
     /**
@@ -41,15 +38,15 @@ class DepartmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(int $id)
     {
         try {
-            return new DepartmentResource(Department::findOrFail($id));
-        } catch (ModelNotFoundException $e) {
+            return new ClassroomResource(Classroom::findOrFail($id));
+        } catch (ModelNotFoundException $exception) {
             return response()->json([
                 'code' => 404,
                 'message' => 'Not Found',
-                'description' => 'Department ' . $id . ' not found.'
+                'description' => 'Classroom ' . $id . ' not found.'
             ], 404);
         }
     }
@@ -58,10 +55,10 @@ class DepartmentController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\Classroom  $classroom
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Classroom $classroom)
     {
         //
     }
@@ -69,16 +66,16 @@ class DepartmentController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\Classroom  $classroom
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Classroom $classroom)
     {
         //
     }
 
     /**
-     * Display a listing of App\Models\Student from App\Models\Department instances.
+     * Display a listing of App\Models\Student from App\Models\Classroom instances.
      *
      * @param int $id
      * @return \Illuminate\Http\Response
@@ -86,7 +83,7 @@ class DepartmentController extends Controller
     public function getStudents(int $id)
     {
         try {
-            $students = Department::findOrFail($id)->students;
+            $students = Classroom::findOrFail($id)->students;
 
             return StudentResource::collection($students);
         } catch (ModelNotFoundException $e) {
@@ -98,30 +95,18 @@ class DepartmentController extends Controller
         }
     }
 
-    public function getAllStudents()
-    {
-        $students = Student::select('department_id', DB::raw('count(*) as count'))
-            ->groupBy('department_id');
-
-        $departments = Department::joinSub($students, 'student', function ($join) {
-            $join->on('department.id', '=', 'student.department_id');
-        })->get();
-
-        return DepartmentStudentResource::collection($departments);
-    }
-
     /**
-     * Display a listing of App\Models\Lecturer from App\Models\Department instances.
+     * Display a listing of App\Models\Subject from App\Models\Classroom instances.
      *
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function getLecturers(int $id)
+    public function getSubjects(int $id)
     {
         try {
-            $lecturers = Department::findOrFail($id)->lecturers;
+            $subjects = Classroom::findOrFail($id)->subjects;
 
-            return LecturerResource::collection($lecturers);
+            return SubjectResource::collection($subjects);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'code' => 404,

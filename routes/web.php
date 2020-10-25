@@ -94,6 +94,24 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         ]);
     });
 
+    $router->group(['prefix' => 'classrooms'], function () use ($router) {
+        $router->get('', [
+            'as' => 'classroom.index', 'uses' => 'ClassroomController@index'
+        ]);
+
+        $router->get('{id}', [
+            'as' => 'classroom.show', 'uses' => 'ClassroomController@show'
+        ]);
+
+        $router->get('{id}/students', [
+            'as' => 'classroom.getStudents', 'uses' => 'ClassroomController@getStudents'
+        ]);
+
+        $router->get('{id}/subjects', [
+            'as' => 'classroom.getSubjects', 'uses' => 'ClassroomController@getSubjects'
+        ]);
+    });
+
     $router->group(['prefix' => 'schedules'], function () use ($router) {
         $router->get('summarize', [
             'as' => 'schedule.summarize', 'uses' => 'ScheduleController@summarize'

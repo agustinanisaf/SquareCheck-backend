@@ -3,19 +3,16 @@
 namespace Database\Factories;
 
 use App\Models\Classroom;
-use App\Models\Subject;
-use App\Models\Lecturer;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
-class SubjectFactory extends Factory
+class ClassroomFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Subject::class;
+    protected $model = Classroom::class;
 
     /**
      * Define the model's default state.
@@ -26,8 +23,7 @@ class SubjectFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
-            'lecturer_id' => Lecturer::factory(),
-            'classroom_id' => Classroom::factory(),
+            'slug' => $this->faker->slug(10),
         ];
     }
 }

@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Subject;
+use App\Models\Classroom;
 use Illuminate\Database\Seeder;
 
-class SubjectSeeder extends Seeder
+class ClassroomSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,9 +14,9 @@ class SubjectSeeder extends Seeder
      */
     public function run()
     {
-        Subject::factory()
-            ->hasLecturer(1)
-            ->hasSchedules(2)
+        Classroom::factory()
+            ->hasStudents(10)
+            ->hasSubjects(10)
             ->create();
     }
 }

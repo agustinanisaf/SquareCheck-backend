@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Subject;
+use App\Models\Student;
+use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Resources\StudentResource;
 use App\Http\Resources\SubjectResource;
 use App\Http\Resources\ScheduleResource;
-use Illuminate\Http\Request;
-use App\Models\Subject;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class SubjectController extends Controller
 {
@@ -83,30 +84,12 @@ class SubjectController extends Controller
     public function getStudents(int $id)
     {
         try {
-            $students = Subject::findOrFail($id)->students;
+            $students = Student::query()
+                ->leftJoin('subject', 'subject.classroom_id', '=', 'student.classroom_id')
+                ->where('subject.id', '=', $id)
+                ->get(['student.*']);
 
             return StudentResource::collection($students);
-        } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'code' => 404,
-                'message' => 'Not Found',
-                'description' => 'Subject ' . $id . ' not found.'
-            ], 404);
-        }
-    }
-
-    /**
-     * Display an instance of App\Models\Lecturer from App\Models\Subject instances.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function getLecturer(int $id)
-    {
-        try {
-            $lecturer = Subject::findOrFail($id)->lecturer;
-
-            return response()->json($lecturer);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'code' => 404,
