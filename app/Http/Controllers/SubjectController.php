@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Closure;
 use App\Models\Subject;
 use App\Models\Student;
 use Illuminate\Http\Request;
@@ -12,6 +13,18 @@ use App\Http\Resources\ScheduleResource;
 
 class SubjectController extends Controller
 {
+    public function __construct(Request $request)
+    {
+        parent::__construct($request);
+
+        $this->lecturerId = $request->get('lecture_id');
+    }
+
+    public function queryLecturer()
+    {
+        
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -19,7 +32,12 @@ class SubjectController extends Controller
      */
     public function index()
     {
-        return SubjectResource::collection(Subject::all());
+        $subject = Subject::when($this->limit, Closure::fromCallable([$this, 'queryLimit']))
+            ->when($this->orderBy, Closure::fromCallable([$this, 'queryOrderBy']))
+            // ->when($this->lecturerId, Closure::fromCallable([$this, 'queryLecturer']))
+            ->get();
+
+        return SubjectResource::collection($subject);
     }
 
     /**
@@ -42,7 +60,13 @@ class SubjectController extends Controller
     public function show($id)
     {
         try {
-            return new SubjectResource(Subject::findOrFail($id));
+            
+            $subject = Subject::findOrFail($id)
+                ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']))
+                ->when($this->orderBy, Closure::fromCallable([$this, 'queryOrderBy']))
+                ->get();
+
+            return new SubjectResource($subject);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'code' => 404,

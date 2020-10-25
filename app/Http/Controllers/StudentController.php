@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Closure;
 use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\Subject;
@@ -19,7 +20,11 @@ class StudentController extends Controller
      */
     public function index()
     {
-        return StudentResource::collection(Student::all());
+        $student = Student::when($this->limit, Closure::fromCallable([$this, 'queryLimit']))
+            ->when($this->orderBy, Closure::fromCallable([$this, 'queryOrderBy']))
+            ->get();
+
+        return StudentResource::collection($student);
     }
 
     /**
@@ -42,7 +47,12 @@ class StudentController extends Controller
     public function show($id)
     {
         try {
-            return new StudentResource(Student::findOrFail($id));
+            $student = Student::findOrFail($id)
+                ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']))
+                ->when($this->orderBy, Closure::fromCallable([$this, 'queryOrderBy']))
+                ->get();
+
+            return new StudentResource($student);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'code' => 404,
