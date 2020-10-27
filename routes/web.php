@@ -133,6 +133,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             'as' => 'schedule.getAttendances', 'uses' => 'ScheduleController@getAttendances'
         ]);
 
+        $router->put('{id}/attendances', [
+            'as' => 'schedule.editAttendances', 'uses' => 'ScheduleController@editAttendances'
+        ]);
+
         $router->post('{id}/attend', [
             'as' => 'schedule.attend', 'uses' => 'ScheduleController@attend'
         ]);

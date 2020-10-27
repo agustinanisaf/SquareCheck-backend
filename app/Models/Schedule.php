@@ -36,7 +36,8 @@ class Schedule extends Model
                     ->withPivot([
                         'time',
                         'status',
-                    ]);
+                    ])
+                    ->withTimestamps();
     }
 
     public function subject()
