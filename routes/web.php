@@ -204,5 +204,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('me', [
             'as' => 'auth.me', 'uses' => 'AuthController@me'
         ]);
+
+        $router->post('register', [
+            'as' => 'auth.register', 'uses' => 'AuthController@register'
+        ]);
     });
 });
