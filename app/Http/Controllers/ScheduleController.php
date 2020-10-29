@@ -11,6 +11,8 @@ use App\Http\Resources\StudentAttendanceResource;
 
 class ScheduleController extends Controller
 {
+    public $order_table = 'schedule';
+
     /**
      * Display a listing of the resource.
      *
@@ -18,9 +20,8 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        $schedule = Schedule::when($this->limit, Closure::fromCallable([$this, 'queryLimit']))
-            ->when($this->orderBy, Closure::fromCallable([$this, 'queryOrderBy']))
-            ->get();
+        $schedule = Schedule::when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+            ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
 
         return ScheduleResource::collection($schedule);
     }

@@ -13,17 +13,7 @@ use App\Http\Resources\ScheduleResource;
 
 class SubjectController extends Controller
 {
-    public function __construct(Request $request)
-    {
-        parent::__construct($request);
-
-        $this->lecturerId = $request->get('lecture_id');
-    }
-
-    public function queryLecturer()
-    {
-        
-    }
+    public $order_table = 'subject';
 
     /**
      * Display a listing of the resource.
@@ -32,10 +22,8 @@ class SubjectController extends Controller
      */
     public function index()
     {
-        $subject = Subject::when($this->limit, Closure::fromCallable([$this, 'queryLimit']))
-            ->when($this->orderBy, Closure::fromCallable([$this, 'queryOrderBy']))
-            // ->when($this->lecturerId, Closure::fromCallable([$this, 'queryLecturer']))
-            ->get();
+        $subject = Subject::when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+            ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
 
         return SubjectResource::collection($subject);
     }
@@ -60,11 +48,7 @@ class SubjectController extends Controller
     public function show($id)
     {
         try {
-            
-            $subject = Subject::findOrFail($id)
-                ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']))
-                ->when($this->orderBy, Closure::fromCallable([$this, 'queryOrderBy']))
-                ->get();
+            $subject = Subject::findOrFail($id);
 
             return new SubjectResource($subject);
         } catch (ModelNotFoundException $e) {

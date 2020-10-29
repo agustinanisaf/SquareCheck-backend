@@ -11,6 +11,8 @@ use App\Http\Resources\SubjectResource;
 
 class LecturerController extends Controller
 {
+    public $order_table = 'lecturer';
+
     /**
      * Display a listing of the resource.
      *
@@ -18,12 +20,10 @@ class LecturerController extends Controller
      */
     public function index()
     {
-        
-        $lecturer = Lecturer::when($this->limit, Closure::fromCallable([$this, 'queryLimit']))
-            ->when($this->orderBy, Closure::fromCallable([$this, 'queryOrderBy']))
-            ->get();
+        $lecturer = Lecturer::when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+            ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
 
-            return LecturerResource::collection($lecturer);
+        return LecturerResource::collection($lecturer);
     }
 
     /**
@@ -46,10 +46,7 @@ class LecturerController extends Controller
     public function show($id)
     {
         try {
-            $lecturer = Lecturer::findOrFail($id)
-                ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']))
-                ->when($this->orderBy, Closure::fromCallable([$this, 'queryOrderBy']))
-                ->get();
+            $lecturer = Lecturer::findOrFail($id);
 
             return new LecturerResource($lecturer);
         } catch (ModelNotFoundException $e) {

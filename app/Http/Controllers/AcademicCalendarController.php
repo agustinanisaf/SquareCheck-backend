@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Closure;
 use App\Http\Resources\AcademicCalendarResource;
 use Illuminate\Http\Request;
 use App\Models\AcademicCalendar as Calendar;
@@ -9,6 +10,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AcademicCalendarController extends Controller
 {
+    public $order_table = 'academic_calendar';
+
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +19,10 @@ class AcademicCalendarController extends Controller
      */
     public function index()
     {
-        return AcademicCalendarResource::collection(Calendar::all());
+        $calendars = Calendar::when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+            ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
+
+        return AcademicCalendarResource::collection($calendars);
     }
 
     /**

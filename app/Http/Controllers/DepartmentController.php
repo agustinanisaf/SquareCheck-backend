@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Closure;
 use Illuminate\Http\Request;
 use App\Models\Department;
 use App\Models\Student;
@@ -14,6 +15,8 @@ use App\Http\Resources\StudentResource;
 
 class DepartmentController extends Controller
 {
+    public $order_table = 'department';
+
     /**
      * Display a listing of the resource.
      *
@@ -21,7 +24,10 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        return DepartmentResource::collection(Department::all());
+        $departments = Department::when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+            ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
+
+        return DepartmentResource::collection($departments);
     }
 
     /**

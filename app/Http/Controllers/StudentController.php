@@ -13,6 +13,8 @@ use App\Http\Resources\ScheduleAttendanceResource;
 
 class StudentController extends Controller
 {
+    public $order_table = 'student';
+
     /**
      * Display a listing of the resource.
      *
@@ -20,9 +22,8 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $student = Student::when($this->limit, Closure::fromCallable([$this, 'queryLimit']))
-            ->when($this->orderBy, Closure::fromCallable([$this, 'queryOrderBy']))
-            ->get();
+        $student = Student::when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+            ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
 
         return StudentResource::collection($student);
     }
@@ -47,10 +48,7 @@ class StudentController extends Controller
     public function show($id)
     {
         try {
-            $student = Student::findOrFail($id)
-                ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']))
-                ->when($this->orderBy, Closure::fromCallable([$this, 'queryOrderBy']))
-                ->get();
+            $student = Student::findOrFail($id);
 
             return new StudentResource($student);
         } catch (ModelNotFoundException $e) {
