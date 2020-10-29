@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ScheduleCollection;
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\Student;
@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\DB;
 
 class ScheduleController extends Controller
 {
+    public $order_table = 'schedule';
+
     /**
      * Display a listing of the resource.
      *
@@ -21,7 +23,10 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        return ScheduleResource::collection(Schedule::all());
+        $schedule = Schedule::when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+            ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
+
+        return ScheduleResource::collection($schedule);
     }
 
     /**

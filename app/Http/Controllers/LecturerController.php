@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Closure;
 use Illuminate\Http\Request;
 use App\Models\Lecturer;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -10,6 +11,8 @@ use App\Http\Resources\SubjectResource;
 
 class LecturerController extends Controller
 {
+    public $order_table = 'lecturer';
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +20,10 @@ class LecturerController extends Controller
      */
     public function index()
     {
-        return LecturerResource::collection(Lecturer::all());
+        $lecturer = Lecturer::when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+            ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
+
+        return LecturerResource::collection($lecturer);
     }
 
     /**
@@ -40,7 +46,9 @@ class LecturerController extends Controller
     public function show($id)
     {
         try {
-            return new LecturerResource(Lecturer::findOrFail($id));
+            $lecturer = Lecturer::findOrFail($id);
+
+            return new LecturerResource($lecturer);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'code' => 404,
