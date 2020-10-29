@@ -21,7 +21,7 @@ class CreateUserTable extends Migration
             $table->string('password');
             $table->enum('role', ['admin', 'lecturer', 'student'])
                 ->default('student');
-            $table->string('photo');
+            $table->string('photo')->nullable()->default('default.jpg');
             $table->timestamps();
         });
     }

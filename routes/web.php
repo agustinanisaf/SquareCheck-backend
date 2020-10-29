@@ -133,6 +133,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             'as' => 'schedule.getAttendances', 'uses' => 'ScheduleController@getAttendances'
         ]);
 
+        $router->put('{id}/attendances', [
+            'as' => 'schedule.editAttendances', 'uses' => 'ScheduleController@editAttendances'
+        ]);
+
         $router->post('{id}/attend', [
             'as' => 'schedule.attend', 'uses' => 'ScheduleController@attend'
         ]);
@@ -199,6 +203,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         $router->post('me', [
             'as' => 'auth.me', 'uses' => 'AuthController@me'
+        ]);
+
+        $router->post('register', [
+            'as' => 'auth.register', 'uses' => 'AuthController@register'
         ]);
     });
 });
