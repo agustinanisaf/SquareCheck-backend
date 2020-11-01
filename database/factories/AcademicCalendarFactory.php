@@ -23,10 +23,11 @@ class AcademicCalendarFactory extends Factory
      */
     public function definition()
     {
+        $types = AcademicCalendarType::all()->pluck('id')->toArray();
         return [
             'name' => $this->faker->name,
             'description' => $this->faker->paragraph(2),
-            'type' => AcademicCalendarType::factory(),
+            'type' => $this->faker->randomElement($types),
             'date' => $this->faker->date,
         ];
     }

@@ -15,6 +15,18 @@ class Student extends Model
 
     protected $table = "student";
 
+    public function setSlugAttribute()
+    {
+        $name = $this->attributes['name'];
+        $fragments = explode(" ", $name);
+        $slug = "";
+        foreach($fragments as $fragment){
+            $slug .= $fragment . " ";
+        }
+
+        $this->attributes['slug'] = trim($slug);
+    }
+
     public function user()
     {
         return $this->belongsTo('App\Models\User');
@@ -23,11 +35,6 @@ class Student extends Model
     public function department()
     {
         return $this->belongsTo('App\Models\Department');
-    }
-
-    public function subject()
-    {
-        return $this->belongsToMany('App\Models\Subject')->as('student_subject');
     }
 
     public function attendances()
@@ -44,4 +51,10 @@ class Student extends Model
                         'status',
                     ]);
     }
+
+    public function classroom()
+    {
+        return $this->belongsTo('App\Models\Classroom');
+    }
+
 }

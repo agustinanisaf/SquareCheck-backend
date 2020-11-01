@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Classroom;
 use App\Models\Student;
 use App\Models\User;
 use App\Models\Department;
@@ -31,7 +32,8 @@ class StudentFactory extends Factory
             'name' => $faker_id->name,
             'nrp' => Str::random(10),
             'department_id' => Department::factory(),
-            'user_id' => User::factory()
+            'user_id' => User::factory(),
+            'classroom_id' => Classroom::all()->pluck('id')->toArray(),
         ];
     }
 }

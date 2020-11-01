@@ -24,12 +24,6 @@ class Subject extends Model
         'name'
     ];
 
-    public function students()
-    {
-        return $this->belongsToMany('App\Models\Student')
-                    ->as('student_subject');
-    }
-
     public function schedules()
     {
         return $this->hasMany('App\Models\Schedule');
@@ -37,5 +31,10 @@ class Subject extends Model
 
     public function lecturer() {
         return $this->belongsTo('App\Models\Lecturer');
+    }
+
+    public function classroom()
+    {
+        return $this->belongsTo('App\Models\Classroom');
     }
 }

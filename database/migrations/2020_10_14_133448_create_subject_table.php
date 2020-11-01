@@ -17,6 +17,8 @@ class CreateSubjectTable extends Migration
             $table->id();
             $table->string('name');
             $table->foreignId('lecturer_id')->constrained('lecturer');
+            $table->foreignId('classroom_id')->constrained('classroom');
+            $table->string("slug");
             $table->timestamps();
         });
 
