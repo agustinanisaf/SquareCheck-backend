@@ -8,6 +8,7 @@ use App\Models\Lecturer;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Resources\LecturerResource;
 use App\Http\Resources\SubjectResource;
+use Illuminate\Support\Facades\Gate;
 
 class LecturerController extends Controller
 {
@@ -20,10 +21,16 @@ class LecturerController extends Controller
      */
     public function index()
     {
-        $lecturer = Lecturer::when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
-            ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
+        if (Gate::allows('admin')) {
+            $lecturer = Lecturer::when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+                ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
 
-        return LecturerResource::collection($lecturer);
+            return LecturerResource::collection($lecturer);
+        } elseif (Gate::allows('lecturer')) {
+            $lecturer = Lecturer::firstWhere('user_id', $this->user->id);
+
+            return new LecturerResource($lecturer);
+        }
     }
 
     /**

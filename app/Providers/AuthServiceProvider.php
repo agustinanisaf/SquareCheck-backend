@@ -33,5 +33,18 @@ class AuthServiceProvider extends ServiceProvider
         $this->app['auth']->viaRequest('api', function ($request) {
             return app('auth')->setRequest($request)->user();
         });
+
+        // Gate Definition
+        Gate::define('student', function ($user) {
+            return $user->role === 'student';
+        });
+
+        Gate::define('lecturer', function ($user) {
+            return $user->role === 'lecturer';
+        });
+
+        Gate::define('admin', function ($user) {
+            return $user->role === 'admin';
+        });
     }
 }
