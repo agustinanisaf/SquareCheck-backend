@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Classroom;
 use App\Models\Subject;
 use App\Models\Lecturer;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -26,6 +27,7 @@ class SubjectFactory extends Factory
         return [
             'name' => $this->faker->name,
             'lecturer_id' => Lecturer::factory(),
+            'classroom_id' => Classroom::factory(),
         ];
     }
 }

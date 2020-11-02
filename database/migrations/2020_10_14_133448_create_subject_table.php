@@ -21,11 +21,6 @@ class CreateSubjectTable extends Migration
             $table->string("slug");
             $table->timestamps();
         });
-
-        Schema::create('student_subject', function(Blueprint $table) {
-            $table->foreignId('student_id')->constrained('student');
-            $table->foreignId('subject_id')->constrained('subject');
-        });
     }
 
     /**
@@ -35,7 +30,6 @@ class CreateSubjectTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('student_subject');
         Schema::dropIfExists('subject');
     }
 }

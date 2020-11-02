@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Classroom;
+use App\Models\Classroom;
 use App\Models\Student;
 use App\Models\User;
 use App\Models\Department;

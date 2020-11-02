@@ -14,7 +14,8 @@ class AcademicCalendarTypeSeeder extends Seeder
      */
     public function run()
     {
-        AcademicCalendarType::factory()->hasAcademicCalendars(3)
+        AcademicCalendarType::factory()
+            ->hasAcademicCalendars(3)
             ->create();
     }
 }
