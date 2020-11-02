@@ -25,7 +25,7 @@ class ScheduleFactory extends Factory
     {
         return [
             'subject_id' => Subject::factory(),
-            'time' => $this->faker->dateTime($max = 'now', $timezone = null),
+            'time' => $this->faker->dateTimeBetween($startDate = 'now', $endDate = '+4 months',$timezone = null),
             'start_time' => $this->faker->dateTime($max = 'now', $timezone = null),
             'end_time' => $this->faker->dateTime($max = 'now', $timezone = null),
         ];

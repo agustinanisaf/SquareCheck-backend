@@ -16,7 +16,7 @@ class CreateClassroomTable extends Migration
         Schema::create('classroom', function (Blueprint $table) {
             $table->id();
             $table->string("name");
-            $table->string("slug");
+            $table->string('slug')->nullable();
             $table->timestamps();
         });
     }

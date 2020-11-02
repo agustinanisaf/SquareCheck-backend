@@ -1,6 +1,6 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+/** @var \Illuminate\Database\Eloquent\Factory $factory*/
 
 namespace Database\Factories;
 
@@ -25,12 +25,12 @@ class ClassroomFactory extends Factory
     public function definition()
     {
         $tingkat = mt_rand(1, 3);
-        $jenisStudi = array("D, S");
-        $prodi = array("Cyber Security", "Telekomunikasi", "Mekatronika", "Elektronika", "Sistem Informasi Bisnis");
+        $jenisStudi = ["D", "S"]; //Diploma and Sarjana
+        $prodi = ["Cyber Security", "Teknik Telekomunikasi", "Teknik Mekatronika", "Teknik Elektronika", "Sistem Informasi Bisnis"];
         $name = mt_rand(1, $tingkat) . " " .
             $this->faker->randomElement($jenisStudi) .
             $tingkat . " " . $this->faker->randomElement($prodi) . " " .
-            $this->faker->randomElement('A', 'B', 'C', 'D');
+            $this->faker->randomElement(['A', 'B', 'C', 'D']);
 
         return [
             'name' => $name,

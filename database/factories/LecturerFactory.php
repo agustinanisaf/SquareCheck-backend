@@ -26,9 +26,9 @@ class LecturerFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
-            'nip' => Str::random(10),
+            'nip' => strval(rand(1000000000, 9999999999)),
             'department_id' => Department::factory(),
-            'user_id' => User::factory()
+            'user_id' => User::factory()->create(['role' => 'lecturer'])
         ];
     }
 }

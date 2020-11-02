@@ -23,10 +23,12 @@ class TokenFactory extends Factory
      */
     public function definition()
     {
+        $user_ids = User::all()->pluck('id')->toArray();
+
         return [
-            'user_id' => User::factory(),
+            'user_id' => $this->faker->randomElement($user_ids),
             'token' => Str::random(10),
-            'type' => $this->faker->randomElement(['forget' ,'refresh']),
+            'type' => $this->faker->unique()->randomElement(['forget', 'refresh', 'fcm_token']),
         ];
     }
 }

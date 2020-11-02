@@ -24,11 +24,15 @@ class AcademicCalendarFactory extends Factory
     public function definition()
     {
         $types = AcademicCalendarType::all()->pluck('id')->toArray();
+        $startDateTime = $this->faker->dateTimeBetween($startDate = 'now', $endDate = '+1 years');
+        $endDateTime = $this->faker->dateTimeBetween($startDate = $endDate, $endDate = '+3 months');
+
         return [
             'name' => $this->faker->name,
             'description' => $this->faker->paragraph(2),
             'type' => $this->faker->randomElement($types),
-            'date' => $this->faker->date,
+            'start_date' => $startDateTime->format("Y-m-d"),
+            'end_date' => $endDateTime->format("Y-m-d"),
         ];
     }
 }

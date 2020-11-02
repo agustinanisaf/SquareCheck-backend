@@ -11,6 +11,10 @@ class Classroom extends Model
 
     protected $table = "classroom";
 
+    protected $fillable = [
+        'name'
+    ];
+
     public function setSlugAttribute()
     {
         $name = $this->attributes['name'];
@@ -23,8 +27,10 @@ class Classroom extends Model
                     $slug .= $major . " ";
                 $slug .= $fragment;
             }
-            else
-                $major .= substr($fragment, 1);
+            else{
+                $major .= substr($fragment, 0, 1);
+                continue;
+            }
             $slug .= " ";
         }
 

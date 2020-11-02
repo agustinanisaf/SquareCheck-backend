@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -36,7 +37,8 @@ class Schedule extends Model
                     ->withPivot([
                         'time',
                         'status',
-                    ]);
+                    ])
+                    ->withTimestamps();
     }
 
     public function subject()
