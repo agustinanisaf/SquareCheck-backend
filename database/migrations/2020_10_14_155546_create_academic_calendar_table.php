@@ -13,6 +13,7 @@ class CreateAcademicCalendarTable extends Migration
      */
     public function up()
     {
+        $this->down();
         Schema::create('academic_calendar', function (Blueprint $table) {
             $table->id();
             $table->string('name');
