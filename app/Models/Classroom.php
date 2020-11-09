@@ -12,7 +12,7 @@ class Classroom extends Model
     protected $table = "classroom";
 
     protected $fillable = [
-        'name'
+        'name', 'slug', 'department_id'
     ];
 
     public function setSlugAttribute()
@@ -21,13 +21,12 @@ class Classroom extends Model
         $fragments = explode(" ", $name);
         $major = "";
         $slug = "";
-        foreach($fragments as $fragment){
-            if(strlen($fragment) <= 2){
-                if($major != "")
+        foreach ($fragments as $fragment) {
+            if (strlen($fragment) <= 2) {
+                if ($major != "")
                     $slug .= $major . " ";
                 $slug .= $fragment;
-            }
-            else{
+            } else {
                 $major .= substr($fragment, 0, 1);
                 continue;
             }
@@ -45,5 +44,10 @@ class Classroom extends Model
     public function subjects()
     {
         return $this->hasMany('App\Models\Subject');
+    }
+
+    public function department()
+    {
+        return $this->belongsTo('App\Models\Department');
     }
 }

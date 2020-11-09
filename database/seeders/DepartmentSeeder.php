@@ -14,8 +14,12 @@ class DepartmentSeeder extends Seeder
      */
     public function run()
     {
-        Department::factory()
-            ->hasLecturers(10)
-            ->create();
+        $prodi = ["Cyber Security", "Teknik Telekomunikasi", "Teknik Mekatronika", "Teknik Elektronika", "Sistem Informasi Bisnis"];
+
+        foreach ($prodi as $p) {
+            Department::factory()
+                ->hasLecturers(10)
+                ->create(['name' => $p]);
+        }
     }
 }

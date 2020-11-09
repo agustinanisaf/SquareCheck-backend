@@ -15,13 +15,13 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             //already working^^^
-            // DepartmentSeeder::class, //also generate 10 lecturer
-            // AcademicCalendarTypeSeeder::class, //also generate 3 academic calendar
+            DepartmentSeeder::class, //also generate 10 lecturer
+            AcademicCalendarTypeSeeder::class, //also generate 3 academic calendar
             // TokenSeeder::class,
-            // ClassroomSeeder::class,
+            ClassroomSeeder::class,
             // LecturerSeeder::class,
             // StudentSeeder::class,
-            // ScheduleSeeder::class,
+            ScheduleSeeder::class,
             // SubjectSeeder::class,
             // StudentAttendanceSeeder::class,
         ]);

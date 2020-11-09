@@ -24,6 +24,18 @@ class Subject extends Model
         'name'
     ];
 
+    public function setSlugAttribute()
+    {
+        $name = $this->attributes['name'];
+        $fragments = explode(" ", $name);
+        $slug = "";
+        foreach ($fragments as $fragment) {
+            $slug .= $fragment[0];
+        }
+
+        $this->attributes['slug'] = trim($slug);
+    }
+
     public function schedules()
     {
         return $this->hasMany('App\Models\Schedule');

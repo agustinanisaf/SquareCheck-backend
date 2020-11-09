@@ -25,7 +25,8 @@ class AcademicCalendarFactory extends Factory
     {
         $types = AcademicCalendarType::all()->pluck('id')->toArray();
         $startDateTime = $this->faker->dateTimeBetween($startDate = 'now', $endDate = '+1 years');
-        $endDateTime = $this->faker->dateTimeBetween($startDate = $endDate, $endDate = '+3 months');
+        $startDateTimeClone = clone $startDateTime;
+        $endDateTime = $this->faker->dateTimeBetween($startDateTime, $startDateTimeClone->modify('+3 months'));
 
         return [
             'name' => $this->faker->name,

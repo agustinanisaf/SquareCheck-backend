@@ -24,4 +24,9 @@ class Department extends Model
     {
         return $this->hasMany('App\Models\Lecturer');
     }
+
+    public function classrooms()
+    {
+        return $this->hasMany('App\Models\Classroom');
+    }
 }

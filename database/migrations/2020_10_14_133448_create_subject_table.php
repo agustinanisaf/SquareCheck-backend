@@ -13,12 +13,12 @@ class CreateSubjectTable extends Migration
      */
     public function up()
     {
-        Schema::create('subject', function(Blueprint $table) {
+        Schema::create('subject', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->foreignId('lecturer_id')->constrained('lecturer');
             $table->foreignId('classroom_id')->constrained('classroom');
-            $table->string("slug");
+            $table->string("slug")->nullable();
             $table->timestamps();
         });
     }
