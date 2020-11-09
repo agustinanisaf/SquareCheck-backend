@@ -24,9 +24,14 @@ class SubjectFactory extends Factory
      */
     public function definition()
     {
+        $subjects = ['Mobile Programming', 'Mathematic', 'Software Development', 'Computer Graphic'];
+
         return [
-            'name' => $this->faker->name,
-            'lecturer_id' => Lecturer::factory(),
+            'name' => $this->faker->randomElement($subjects),
+            'lecturer_id' => function (array $attributes) {
+                $lecturers = Lecturer::where('department_id', Classroom::find($attributes['classroom_id'])->department_id)->pluck('id')->toArray();
+                return $this->faker->randomElement($lecturers);
+            },
             'classroom_id' => Classroom::factory(),
         ];
     }

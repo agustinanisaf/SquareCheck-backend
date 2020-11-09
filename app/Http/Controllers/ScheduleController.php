@@ -215,7 +215,9 @@ class ScheduleController extends Controller
                     $query->where('student_attendance.status', 'terlambat');
                 }, 'students as alpa' => function ($query) {
                     $query->where('student_attendance.status', 'alpa');
-                }])->orderBy('end_time', 'desc')->get();
+                }])
+                    ->when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+                    ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
             } elseif (Gate::allows('lecturer')) {
                 $lecturer = Lecturer::firstWhere('user_id', $this->user->id);
                 if ($lecturer == null) throw new ModelNotFoundException("Lecturer not found.", 0);

@@ -19,11 +19,12 @@ class CreateAcademicCalendarTable extends Migration
             $table->text('description');
             $table->unsignedBigInteger('type');
             $table->foreign('type')
-                  ->references('id')
-                  ->on('academic_calendar_type')
-                  ->onDelete('cascade')
-                  ->onUpdate('cascade');
-            $table->date('date');
+                ->references('id')
+                ->on('academic_calendar_type')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+            $table->date('start_date');
+            $table->date('end_date');
             $table->timestamps();
         });
     }

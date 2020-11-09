@@ -12,6 +12,7 @@ use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\DepartmentStudentResource;
 use App\Http\Resources\LecturerResource;
 use App\Http\Resources\StudentResource;
+use App\Models\Lecturer;
 
 class DepartmentController extends Controller
 {
@@ -92,7 +93,9 @@ class DepartmentController extends Controller
     public function getStudents(int $id)
     {
         try {
-            $students = Department::findOrFail($id)->students;
+            $students = Student::where('department_id', $id)
+                ->when([$this->order_table, $this->orderBy], \Closure::fromCallable([$this, 'queryOrderBy']))
+                ->when($this->limit, \Closure::fromCallable([$this, 'queryLimit']));;
 
             return StudentResource::collection($students);
         } catch (ModelNotFoundException $e) {
@@ -125,7 +128,9 @@ class DepartmentController extends Controller
     public function getLecturers(int $id)
     {
         try {
-            $lecturers = Department::findOrFail($id)->lecturers;
+            $lecturers = Lecturer::where('department_id', $id)
+                ->when([$this->order_table, $this->orderBy], \Closure::fromCallable([$this, 'queryOrderBy']))
+                ->when($this->limit, \Closure::fromCallable([$this, 'queryLimit']));;
 
             return LecturerResource::collection($lecturers);
         } catch (ModelNotFoundException $e) {

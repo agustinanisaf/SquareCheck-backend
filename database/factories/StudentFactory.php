@@ -27,13 +27,20 @@ class StudentFactory extends Factory
     public function definition()
     {
         $faker_id = Faker::create('id_ID');
+        $classrooms = Classroom::all()->pluck('id')->toArray();
+        $departments = Department::all()->pluck('id')->toArray();
 
         return [
             'name' => $faker_id->name,
-            'nrp' => Str::random(10),
-            'department_id' => Department::factory(),
-            'user_id' => User::factory(),
-            'classroom_id' => Classroom::factory(),
+            'nrp' => strval(rand(1000000000, 9999999999)),
+            'department_id' => $this->faker->randomElement($departments),
+            'user_id' => function (array $attributes) {
+                return User::factory()->create([
+                    'name' => $attributes['name'],
+                    'role' => 'student'
+                ]);
+            },
+            'classroom_id' => $this->faker->randomElement($classrooms),
         ];
     }
 }

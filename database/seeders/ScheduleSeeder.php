@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Schedule;
+use App\Models\Subject;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 
 class ScheduleSeeder extends Seeder
@@ -14,7 +16,15 @@ class ScheduleSeeder extends Seeder
      */
     public function run()
     {
-        Schedule::factory()
-            ->create();
+        $subjects = Subject::all()->pluck('id')->toArray();
+
+        foreach ($subjects as $subject) {
+            Schedule::factory()
+                ->count(16)
+                ->recurring(16)
+                ->create([
+                    'subject_id' => $subject
+                ]);
+        }
     }
 }

@@ -28,15 +28,20 @@ class Student extends Model
     public function attendances()
     {
         return $this->belongsToMany(
-                        'App\Models\Schedule',
-                        'student_attendance',
-                        'student_id',
-                        'schedule_id'
-                    )
-                    ->as('student_attendance')
-                    ->withPivot([
-                        'time',
-                        'status',
-                    ]);
+            'App\Models\Schedule',
+            'student_attendance',
+            'student_id',
+            'schedule_id'
+        )
+            ->as('student_attendance')
+            ->withPivot([
+                'time',
+                'status',
+            ]);
+    }
+
+    public function classroom()
+    {
+        return $this->belongsTo('App\Models\Classroom');
     }
 }
