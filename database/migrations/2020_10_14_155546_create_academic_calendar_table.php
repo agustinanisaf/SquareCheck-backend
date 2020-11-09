@@ -13,17 +13,16 @@ class CreateAcademicCalendarTable extends Migration
      */
     public function up()
     {
-        $this->down();
         Schema::create('academic_calendar', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->text('description');
             $table->unsignedBigInteger('type');
             $table->foreign('type')
-                  ->references('id')
-                  ->on('academic_calendar_type')
-                  ->onDelete('cascade')
-                  ->onUpdate('cascade');
+                ->references('id')
+                ->on('academic_calendar_type')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->date('date');
             $table->timestamps();
         });
