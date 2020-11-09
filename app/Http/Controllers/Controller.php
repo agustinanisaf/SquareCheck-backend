@@ -10,7 +10,9 @@ class Controller extends BaseController
 {
     public function __construct(Request $request)
     {
-        $this->limit = $request->get('limit');
+        $PAGINATION = 9;
+        $this->user = $request->user();
+        $this->limit = $request->get('limit') ? $request->get('limit') : $PAGINATION;
         $this->orderBy = $request->get('order_by');
     }
 
