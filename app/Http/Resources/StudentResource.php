@@ -19,6 +19,11 @@ class StudentResource extends JsonResource
             'name' => $this->name,
             'nrp' => $this->nrp,
             'department' =>  new DepartmentResource($this->department),
+            'classroom' => [
+                'id' => $this->classroom->id,
+                'name' => $this->classroom->name,
+                'slug' => $this->classroom->slug,
+            ],
             'user' => new UserResource($this->user)
         ];
     }

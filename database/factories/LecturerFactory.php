@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Lecturer;
 use App\Models\User;
 use App\Models\Department;
+use Faker\Factory as Faker;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -24,11 +25,18 @@ class LecturerFactory extends Factory
      */
     public function definition()
     {
+        $faker_id = Faker::create('id_ID');
+
         return [
-            'name' => $this->faker->name,
-            'nip' => Str::random(10),
+            'name' => $faker_id->name,
+            'nip' => strval(rand(1000000000, 9999999999)),
             'department_id' => Department::factory(),
-            'user_id' => User::factory()
+            'user_id' => function (array $attributes) {
+                return User::factory()->create([
+                    'name' => $attributes['name'],
+                    'role' => 'lecturer'
+                ]);
+            },
         ];
     }
 }

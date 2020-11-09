@@ -95,7 +95,8 @@ class SubjectController extends Controller
             $students = Student::query()
                 ->leftJoin('subject', 'subject.classroom_id', '=', 'student.classroom_id')
                 ->where('subject.id', '=', $id)
-                ->get(['student.*']);
+                ->when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+                ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
 
             return StudentResource::collection($students);
         } catch (ModelNotFoundException $e) {

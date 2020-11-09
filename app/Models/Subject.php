@@ -24,10 +24,16 @@ class Subject extends Model
         'name'
     ];
 
-    public function students()
+    public function setSlugAttribute()
     {
-        return $this->belongsToMany('App\Models\Student')
-            ->as('student_subject');
+        $name = $this->attributes['name'];
+        $fragments = explode(" ", $name);
+        $slug = "";
+        foreach ($fragments as $fragment) {
+            $slug .= $fragment[0];
+        }
+
+        $this->attributes['slug'] = trim($slug);
     }
 
     public function schedules()

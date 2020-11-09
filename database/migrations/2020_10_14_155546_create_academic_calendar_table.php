@@ -23,7 +23,8 @@ class CreateAcademicCalendarTable extends Migration
                 ->on('academic_calendar_type')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->date('date');
+            $table->date('start_date');
+            $table->date('end_date');
             $table->timestamps();
         });
     }
