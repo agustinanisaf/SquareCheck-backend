@@ -137,20 +137,49 @@ class ScheduleController extends Controller
             ]);
 
             $schedule = Schedule::findOrFail($id);
-            // TODO: Change HARDCODE Minute
+            $student = $schedule->students()->where('id', $request->student_id)->first();
             $current_time = date_create();
-            if (date_diff($current_time, date_create($schedule->start_time))->i < 15) {
-                $attendance_status = 'hadir';
-            } elseif (date_diff(date_create($schedule->end_time), $current_time)->invert) {
-                $attendance_status = 'terlambat';
-            } else {
-                $attendance_status = 'alpa';
+            $start_time = date_create($schedule->start_time);
+            $end_time = date_create($schedule->end_time);
+
+            if ($student == null) {
+                return response()->json([
+                    'code' => 404,
+                    'message' => 'Not Found',
+                    'description' => 'Student not found in Attendance.'
+                ], 404);
+            }
+            if ($schedule->start_time == null) {
+                return response()->json([
+                    'code' => 409,
+                    'message' => 'Conflict',
+                    'description' => 'Attend Failed! Attendance not open yet.'
+                ], 409);
+            }
+            if ($schedule->end_time != null && date_diff($end_time, $current_time)) {
+                return response()->json([
+                    'code' => 409,
+                    'message' => 'Conflict',
+                    'description' => 'Attend Failed! Attendance already closed.'
+                ], 409);
             }
 
-            $schedule->students()
-                ->syncWithoutDetaching([$request->student_id => ['time' => $current_time, 'status' => $attendance_status]]);
+            if (!$student->student_attendance->time) {
+                // TODO: Change HARDCODE Minute
+                if (date_diff($current_time, $start_time)->i < 15) {
+                    $attendance_status = 'hadir';
+                } elseif (date_diff($end_time, $current_time)->invert) {
+                    $attendance_status = 'terlambat';
+                }
 
-            $student = $schedule->students()->where('id', $request->student_id)->first();
+                $schedule->students()
+                    ->syncWithoutDetaching([
+                        $request->student_id => [
+                            'time' => $current_time,
+                            'status' => $attendance_status
+                        ]
+                    ]);
+            }
 
             return new StudentAttendanceResource($student);
         } catch (ModelNotFoundException $e) {
@@ -187,15 +216,30 @@ class ScheduleController extends Controller
         try {
             $schedule = Schedule::findOrFail($id);
 
+            if ($schedule->start_time) {
+                return new ScheduleResource($schedule);
+            }
             if (
                 !$schedule->start_time
+                // Are now is after scheduled time?
                 && date_diff(date_create(), date_create($schedule->time))->invert
             ) {
                 $schedule->start_time = date("Y-m-d H:i:s");
                 $schedule->save();
+
+                $students = $schedule->subject->classroom->students->pluck('id')->toArray();
+                $attendance = $this->getInitialAttendance($students);
+                $schedule->students()->sync($attendance);
+
+                $schedule_collection = new ScheduleResource($schedule);
+                return response()->json($schedule_collection->jsonSerialize(), 201);
             }
 
-            return new ScheduleResource($schedule);
+            return response()->json([
+                'code' => 409,
+                'message' => 'Conflict',
+                'description' => 'Open Failed! Ahead of Time.'
+            ], 409);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'code' => 404,
@@ -203,6 +247,15 @@ class ScheduleController extends Controller
                 'description' => 'Schedule ' . $id . ' not found.'
             ], 404);
         }
+    }
+
+    public function getInitialAttendance(array $students)
+    {
+        $attendance = [];
+        foreach ($students as $key => $value) {
+            $attendance[$value] = ['time' => null, 'status' => 'alpa'];
+        }
+        return $attendance;
     }
 
     public function close(Request $request, int $id)
