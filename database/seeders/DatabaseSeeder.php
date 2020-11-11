@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             //already working^^^
+            UserSeeder::class,
             DepartmentSeeder::class, //also generate 10 lecturer
             AcademicCalendarTypeSeeder::class, //also generate 3 academic calendar
             // TokenSeeder::class,
