@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Closure;
 use App\Models\Classroom;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -11,6 +12,8 @@ use App\Http\Resources\SubjectResource;
 
 class ClassroomController extends Controller
 {
+    public $order_table = 'department';
+
     /**
      * Display a listing of the resource.
      *
@@ -18,7 +21,10 @@ class ClassroomController extends Controller
      */
     public function index()
     {
-        return ClassroomResource::collection(Classroom::all());
+        $classroom = Classroom::when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+            ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
+
+        return ClassroomResource::collection($classroom);
     }
 
     /**
@@ -83,7 +89,10 @@ class ClassroomController extends Controller
     public function getStudents(int $id)
     {
         try {
-            $students = Classroom::findOrFail($id)->students;
+            $students = Classroom::findOrFail($id)
+                ->students()
+                ->when(['student', $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+                ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
 
             return StudentResource::collection($students);
         } catch (ModelNotFoundException $e) {
@@ -104,7 +113,10 @@ class ClassroomController extends Controller
     public function getSubjects(int $id)
     {
         try {
-            $subjects = Classroom::findOrFail($id)->subjects;
+            $subjects = Classroom::findOrFail($id)
+                ->subjects()
+                ->when(['subject', $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+                ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
 
             return SubjectResource::collection($subjects);
         } catch (ModelNotFoundException $e) {

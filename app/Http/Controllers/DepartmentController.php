@@ -94,8 +94,8 @@ class DepartmentController extends Controller
     {
         try {
             $students = Student::where('department_id', $id)
-                ->when([$this->order_table, $this->orderBy], \Closure::fromCallable([$this, 'queryOrderBy']))
-                ->when($this->limit, \Closure::fromCallable([$this, 'queryLimit']));;
+                ->when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+                ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));;
 
             return StudentResource::collection($students);
         } catch (ModelNotFoundException $e) {
@@ -114,7 +114,9 @@ class DepartmentController extends Controller
 
         $departments = Department::joinSub($students, 'student', function ($join) {
             $join->on('department.id', '=', 'student.department_id');
-        })->get();
+        })
+            ->when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+            ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
 
         return DepartmentStudentResource::collection($departments);
     }
@@ -129,8 +131,8 @@ class DepartmentController extends Controller
     {
         try {
             $lecturers = Lecturer::where('department_id', $id)
-                ->when([$this->order_table, $this->orderBy], \Closure::fromCallable([$this, 'queryOrderBy']))
-                ->when($this->limit, \Closure::fromCallable([$this, 'queryLimit']));;
+                ->when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+                ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
 
             return LecturerResource::collection($lecturers);
         } catch (ModelNotFoundException $e) {

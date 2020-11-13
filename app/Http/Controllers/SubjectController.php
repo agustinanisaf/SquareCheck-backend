@@ -117,7 +117,10 @@ class SubjectController extends Controller
     public function getSchedules(int $id)
     {
         try {
-            $schedules = Subject::findOrFail($id)->schedules;
+            $schedules = Subject::findOrFail($id)
+                ->schedules()
+                ->when(['schedule', $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+                ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
 
             return ScheduleResource::collection($schedules);
         } catch (ModelNotFoundException $e) {

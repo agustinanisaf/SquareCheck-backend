@@ -90,7 +90,10 @@ class LecturerController extends Controller
     public function getSubjects(int $id)
     {
         try {
-            $subjects = Lecturer::findOrFail($id)->subjects;
+            $subjects = Lecturer::findOrFail($id)
+                ->subjects()
+                ->when(['subject', $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+                ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
 
             return SubjectResource::collection($subjects);
         } catch (ModelNotFoundException $e) {
