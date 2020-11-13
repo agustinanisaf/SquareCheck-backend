@@ -93,6 +93,7 @@ class SubjectController extends Controller
     {
         try {
             $students = Student::query()
+                ->select(['student.*'])
                 ->leftJoin('subject', 'subject.classroom_id', '=', 'student.classroom_id')
                 ->where('subject.id', '=', $id)
                 ->when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
