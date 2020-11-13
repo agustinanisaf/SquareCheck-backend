@@ -137,6 +137,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             'as' => 'schedule.editAttendances', 'uses' => 'ScheduleController@editAttendances'
         ]);
 
+        $router->delete('{id}/attendances', [
+            'as' => 'schedule.removeAttendances', 'uses' => 'ScheduleController@removeAttendances'
+        ]);
+
         $router->post('{id}/attend', [
             'as' => 'schedule.attend', 'uses' => 'ScheduleController@attend'
         ]);

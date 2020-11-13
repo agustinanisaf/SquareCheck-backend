@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ScheduleAttendanceResource;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -129,6 +130,46 @@ class ScheduleController extends Controller
         }
     }
 
+    public function removeAttendances(int $id)
+    {
+        try {
+            $schedule = Schedule::findOrFail($id);
+
+            // Check schedule already end or not even started.
+            if ($schedule->end_time) {
+                return response()->json([
+                    'code' => 409,
+                    'message' => 'Conflict',
+                    'description' => 'Schedule ' . $id . ' already ended.'
+                ], 409);
+            }
+            if ($schedule->start_time == null) {
+                return response()->json([
+                    'code' => 409,
+                    'message' => 'Conflict',
+                    'description' => 'Schedule ' . $id . ' not even started.'
+                ], 409);
+            }
+
+            $schedule->start_time = null;
+            $schedule->end_time = null;
+            $schedule->students()->detach();
+            $schedule->save();
+
+            return response()->json([
+                'code' => 200,
+                'message' => 'OK',
+                'description' => 'Successfully remove attendance.',
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'code' => 404,
+                'message' => 'Not Found',
+                'description' => 'Schedule ' . $id . ' not found.'
+            ], 404);
+        }
+    }
+
     public function attend(Request $request, int $id)
     {
         try {
@@ -179,6 +220,7 @@ class ScheduleController extends Controller
                             'status' => $attendance_status
                         ]
                     ]);
+                $student = $schedule->students()->where('id', $request->student_id)->first();
             }
 
             return new StudentAttendanceResource($student);
