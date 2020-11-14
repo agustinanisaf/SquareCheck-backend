@@ -14,6 +14,7 @@ class Controller extends BaseController
         $this->user = $request->user();
         $this->limit = $request->get('limit') ? $request->get('limit') : $PAGINATION;
         $this->orderBy = $request->get('order_by');
+        $this->search = $request->get('search');
     }
 
     public function queryLimit($query, $limit)
@@ -31,6 +32,17 @@ class Controller extends BaseController
             if (Schema::hasColumn($order_table, $order_field)) {
                 $order_mode = (substr($order, 0, 1) === '+') ? 'asc' : 'desc';
                 $query->orderBy($order_field, $order_mode);   
+            }
+        }
+
+        return $query;
+    }
+
+    public function querySearch($query, $columns)
+    {
+        if ($this->search !== null) {
+            foreach ($columns as $column) {
+                $query->orWhere($column, 'LIKE', '%' . $this->search . '%');
             }
         }
 
