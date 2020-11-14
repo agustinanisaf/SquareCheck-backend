@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Resources\StudentResource;
 use App\Http\Resources\SubjectResource;
 use App\Http\Resources\ScheduleAttendanceResource;
-use Illuminate\Support\Facades\Gate;
 
 class StudentController extends Controller
 {
@@ -23,16 +22,10 @@ class StudentController extends Controller
      */
     public function index()
     {
-        if (Gate::allows('admin')) {
-            $student = Student::when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
-                ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
+        $student = Student::when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+            ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
 
-            return StudentResource::collection($student);
-        } elseif (Gate::allows('student')) {
-            $student = Student::firstWhere('user_id', $this->user->id);
-
-            return new StudentResource($student);
-        }
+        return StudentResource::collection($student);
     }
 
     /**
