@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ScheduleAttendanceResource;
 use Closure;
 use App\Models\Student;
 use App\Models\Schedule;
@@ -155,6 +156,46 @@ class ScheduleController extends Controller
         }
     }
 
+    public function removeAttendances(int $id)
+    {
+        try {
+            $schedule = Schedule::findOrFail($id);
+
+            // Check schedule already end or not even started.
+            if ($schedule->end_time) {
+                return response()->json([
+                    'code' => 409,
+                    'message' => 'Conflict',
+                    'description' => 'Schedule ' . $id . ' already ended.'
+                ], 409);
+            }
+            if ($schedule->start_time == null) {
+                return response()->json([
+                    'code' => 409,
+                    'message' => 'Conflict',
+                    'description' => 'Schedule ' . $id . ' not even started.'
+                ], 409);
+            }
+
+            $schedule->start_time = null;
+            $schedule->end_time = null;
+            $schedule->students()->detach();
+            $schedule->save();
+
+            return response()->json([
+                'code' => 200,
+                'message' => 'OK',
+                'description' => 'Successfully remove attendance.',
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'code' => 404,
+                'message' => 'Not Found',
+                'description' => 'Schedule ' . $id . ' not found.'
+            ], 404);
+        }
+    }
+
     public function attend(Request $request, int $id)
     {
         try {
@@ -166,34 +207,67 @@ class ScheduleController extends Controller
                 ]);
 
                 $student_id = $request->student_id;
-                $student = $schedule->students()->where('id', $student_id)->first();
             } elseif (Gate::allows('student')) {
-                $student = Student::firstWhere('user_id', $this->user->id);
+                $student_data = Student::firstWhere('user_id', $this->user->id);
 
-                if ($student == null) {
+                if ($student_data == null) {
                     throw new ModelNotFoundException;
                 }
 
-                $student_id = $student->id;
+                $student_id = $student_data->id;
             }
+            $student = $schedule->students()->where('id', $student_id)->first();
+
 
             // TODO: Change HARDCODE Minute
             $current_time = date_create();
-            if (date_diff($current_time, date_create($schedule->start_time))->i < 15) {
-                $attendance_status = 'hadir';
-            } elseif (date_diff(date_create($schedule->end_time), $current_time)->invert) {
-                $attendance_status = 'terlambat';
-            } else {
-                $attendance_status = 'alpa';
+            $start_time = date_create($schedule->start_time);
+            $end_time = date_create($schedule->end_time);
+
+            if ($student == null) {
+                return response()->json([
+                    'code' => 404,
+                    'message' => 'Not Found',
+                    'description' => 'Student not found in Attendance.'
+                ], 404);
+            }
+            if ($schedule->start_time == null) {
+                return response()->json([
+                    'code' => 409,
+                    'message' => 'Conflict',
+                    'description' => 'Attend Failed! Attendance not open yet.'
+                ], 409);
+            }
+            if ($schedule->end_time != null && date_diff($end_time, $current_time)) {
+                return response()->json([
+                    'code' => 409,
+                    'message' => 'Conflict',
+                    'description' => 'Attend Failed! Attendance already closed.'
+                ], 409);
             }
 
-            $schedule->students()
-                ->syncWithoutDetaching([$student_id => ['time' => $current_time, 'status' => $attendance_status]]);
+            if (!$student->student_attendance->time) {
+                // TODO: Change HARDCODE Minute
+                if (date_diff($current_time, $start_time)->i < 15) {
+                    $attendance_status = 'hadir';
+                } elseif (date_diff($end_time, $current_time)->invert) {
+                    $attendance_status = 'terlambat';
+                }
+
+                $schedule->students()
+                    ->syncWithoutDetaching([
+                        $student_id => [
+                            'time' => $current_time,
+                            'status' => $attendance_status
+                        ]
+                    ]);
+                $student = $schedule->students()->where('id', $student_id)->first();
+            }
 
             return new StudentAttendanceResource($student);
         } catch (ModelNotFoundException $e) {
             $desc = ($e->getModel() == 'App\Models\Schedule') ?
-                'Schedule ' . $id . ' not found.' : 'Student ' . $request->student_id . ' not found.';
+                'Schedule ' . $id . ' not found.' : 'Student with User ID ' . $this->user->id . ' not found.';
 
             return response()->json([
                 'code' => 404,
@@ -206,21 +280,11 @@ class ScheduleController extends Controller
     public function summarize(Request $request)
     {
         try {
-            if (Gate::allows('admin')) {
-                $schedule = Schedule::withCount(['students as hadir' => function ($query) {
-                    $query->where('student_attendance.status', 'hadir');
-                }, 'students as izin' => function ($query) {
-                    $query->where('student_attendance.status', 'izin');
-                }, 'students as terlambat' => function ($query) {
-                    $query->where('student_attendance.status', 'terlambat');
-                }, 'students as alpa' => function ($query) {
-                    $query->where('student_attendance.status', 'alpa');
-                }])
-                    ->when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
-                    ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
-            } elseif (Gate::allows('lecturer')) {
-                $lecturer = Lecturer::firstWhere('user_id', $this->user->id);
-                if ($lecturer == null) throw new ModelNotFoundException("Lecturer not found.", 0);
+            if (Gate::any(['admin', 'lecturer'])) {
+                if (Gate::allows('lecturer')) {
+                    $lecturer = Lecturer::firstWhere('user_id', $this->user->id);
+                    if ($lecturer == null) throw new ModelNotFoundException("Lecturer not found.", 0);
+                }
 
                 $schedule = Schedule::whereIn('subject_id', $lecturer->subjects)
                     ->withCount(['students as hadir' => function ($query) {
@@ -231,7 +295,9 @@ class ScheduleController extends Controller
                         $query->where('student_attendance.status', 'terlambat');
                     }, 'students as alpa' => function ($query) {
                         $query->where('student_attendance.status', 'alpa');
-                    }])->orderBy('end_time', 'desc')->get();
+                    }])
+                    ->when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+                    ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
             } elseif (Gate::allows('student')) {
                 // TODO: GroupBy?
                 $student = Student::firstWhere('user_id', $this->user->id);
@@ -249,7 +315,9 @@ class ScheduleController extends Controller
                 }, 'students as alpa' => function ($query) use ($student) {
                     $query->where('student_attendance.status', 'alpa')
                         ->where('student_attendance.student_id', $student->id);
-                }])->orderBy('end_time', 'desc')->get();
+                }])
+                    ->when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+                    ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
             }
 
             return ScheduleSummaryResource::collection($schedule);
@@ -268,15 +336,30 @@ class ScheduleController extends Controller
             try {
                 $schedule = Schedule::findOrFail($id);
 
+                if ($schedule->start_time) {
+                    return new ScheduleResource($schedule);
+                }
                 if (
                     !$schedule->start_time
+                    // Are now is after scheduled time?
                     && date_diff(date_create(), date_create($schedule->time))->invert
                 ) {
                     $schedule->start_time = date("Y-m-d H:i:s");
                     $schedule->save();
+
+                    $students = $schedule->subject->classroom->students->pluck('id')->toArray();
+                    $attendance = $this->getInitialAttendance($students);
+                    $schedule->students()->sync($attendance);
+
+                    $schedule_collection = new ScheduleResource($schedule);
+                    return response()->json($schedule_collection->jsonSerialize(), 201);
                 }
 
-                return new ScheduleResource($schedule);
+                return response()->json([
+                    'code' => 409,
+                    'message' => 'Conflict',
+                    'description' => 'Open Failed! Ahead of Time.'
+                ], 409);
             } catch (ModelNotFoundException $e) {
                 return response()->json([
                     'code' => 404,
@@ -285,6 +368,15 @@ class ScheduleController extends Controller
                 ], 404);
             }
         }
+    }
+
+    public function getInitialAttendance(array $students)
+    {
+        $attendance = [];
+        foreach ($students as $key => $value) {
+            $attendance[$value] = ['time' => null, 'status' => 'alpa'];
+        }
+        return $attendance;
     }
 
     public function close(Request $request, int $id)
