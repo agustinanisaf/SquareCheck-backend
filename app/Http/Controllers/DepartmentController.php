@@ -95,6 +95,7 @@ class DepartmentController extends Controller
         try {
             $students = Student::where('department_id', $id)
                 ->when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+                ->when(['nrp', 'name'], Closure::fromCallable([$this, 'querySearch']))
                 ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));;
 
             return StudentResource::collection($students);
