@@ -30,7 +30,7 @@ class Controller extends BaseController
         foreach ($orders as $order) {
             $order_field = substr($order, 1);
             if (Schema::hasColumn($order_table, $order_field)) {
-                $order_mode = (substr($order, 0, 1) === '+') ? 'asc' : 'desc';
+                $order_mode = (substr($order, 0, 1) === '-') ? 'desc' : 'asc';
                 $query->orderBy($order_field, $order_mode);   
             }
         }
