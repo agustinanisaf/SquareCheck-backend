@@ -296,6 +296,8 @@ class ScheduleController extends Controller
                     }, 'students as alpa' => function ($query) {
                         $query->where('student_attendance.status', 'alpa');
                     }])
+                    ->whereNotNull('end_time')
+                    ->whereNotNull('start_time')
                     ->when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
                     ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
             } elseif (Gate::allows('student')) {
@@ -316,6 +318,8 @@ class ScheduleController extends Controller
                     $query->where('student_attendance.status', 'alpa')
                         ->where('student_attendance.student_id', $student->id);
                 }])
+                    ->whereNotNull('end_time')
+                    ->whereNotNull('start_time')
                     ->when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
                     ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
             }

@@ -16,10 +16,7 @@ class ScheduleResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'subject' => [
-                'id' => $this->subject->id,
-                'name' => $this->subject->name
-            ],
+            'subject' => new SubjectResource($this->subject),
             'time' => $this->time,
             'start_time' => $this->start_time,
             'end_time' => $this->end_time
