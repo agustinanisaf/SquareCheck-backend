@@ -170,6 +170,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->get('{id}/schedules', [
             'as' => 'subject.getSchedules', 'uses' => 'SubjectController@getSchedules'
         ]);
+
+        $router->get('{id}/attendances', [
+            'as' => 'subject.getAttendances', 'uses' => 'SubjectController@getAttendances'
+        ]);
     });
 
     $router->group(['prefix' => 'academic-calendars'], function () use ($router) {
