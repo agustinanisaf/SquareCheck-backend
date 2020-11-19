@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Resources\StudentResource;
 use App\Http\Resources\SubjectResource;
 use App\Http\Resources\ScheduleResource;
+use App\Http\Resources\SubjectAttendanceResource;
+use App\Models\Schedule;
 
 class SubjectController extends Controller
 {
@@ -124,6 +126,30 @@ class SubjectController extends Controller
                 ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
 
             return ScheduleResource::collection($schedules);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'code' => 404,
+                'message' => 'Not Found',
+                'description' => 'Subject ' . $id . ' not found.'
+            ], 404);
+        }
+    }
+
+    /**
+     * Display a listing of App\Models\Student from App\Models\Subject instances.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function getAttendances(int $id)
+    {
+        try {
+            $schedules = Schedule::with('students')
+                ->where('subject_id', $id)
+                ->when(['schedule', $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+                ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
+
+            return SubjectAttendanceResource::collection($schedules);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'code' => 404,
