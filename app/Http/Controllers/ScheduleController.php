@@ -281,13 +281,15 @@ class ScheduleController extends Controller
     {
         try {
             if (Gate::any(['admin', 'lecturer'])) {
-                if (Gate::allows('lecturer')) {
+                if (Gate::allows('admin')) {
+                    $schedules = Schedule::query();
+                } else if (Gate::allows('lecturer')) {
                     $lecturer = Lecturer::firstWhere('user_id', $this->user->id);
                     if ($lecturer == null) throw new ModelNotFoundException("Lecturer not found.", 0);
+                    $schedules = Schedule::whereIn('subject_id', $lecturer->subjects);
                 }
 
-                $schedule = Schedule::whereIn('subject_id', $lecturer->subjects)
-                    ->withCount(['students as hadir' => function ($query) {
+                $schedules->withCount(['students as hadir' => function ($query) {
                         $query->where('student_attendance.status', 'hadir');
                     }, 'students as izin' => function ($query) {
                         $query->where('student_attendance.status', 'izin');
@@ -305,7 +307,7 @@ class ScheduleController extends Controller
                 $student = Student::firstWhere('user_id', $this->user->id);
                 if ($student == null) throw new ModelNotFoundException("Student not found.", 0);
 
-                $schedule = Schedule::withCount(['students as hadir' => function ($query) use ($student) {
+                $schedules = Schedule::withCount(['students as hadir' => function ($query) use ($student) {
                     $query->where('student_attendance.status', 'hadir')
                         ->where('student_attendance.student_id', $student->id);
                 }, 'students as izin' => function ($query) use ($student) {
@@ -324,7 +326,7 @@ class ScheduleController extends Controller
                     ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
             }
 
-            return ScheduleSummaryResource::collection($schedule);
+            return ScheduleSummaryResource::collection($schedules);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'code' => 404,

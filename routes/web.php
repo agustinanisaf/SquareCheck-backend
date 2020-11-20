@@ -161,7 +161,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             ]);
         });
 
-        $router->group(['prefix' => 'subjects', 'middleware' => 'role:admin'], function () use ($router) {
+        // TODO: Open for public for the time being
+        $router->group(['prefix' => 'subjects'], function () use ($router) {
             $router->get('', [
                 'as' => 'subject.index', 'uses' => 'SubjectController@index'
             ]);
@@ -176,6 +177,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
             $router->get('{id}/schedules', [
                 'as' => 'subject.getSchedules', 'uses' => 'SubjectController@getSchedules'
+            ]);
+
+            $router->get('{id}/attendances', [
+                'as' => 'subject.getAttendances', 'uses' => 'SubjectController@getAttendances'
             ]);
         });
 
