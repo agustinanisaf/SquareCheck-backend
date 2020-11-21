@@ -275,8 +275,7 @@ class ScheduleController extends Controller
                 $attendance = $this->getInitialAttendance($students);
                 $schedule->students()->sync($attendance);
 
-                $schedule_collection = new ScheduleResource($schedule);
-                return response()->json($schedule_collection->jsonSerialize(), 201);
+                return new ScheduleResource($schedule);
             }
 
             return response()->json([
