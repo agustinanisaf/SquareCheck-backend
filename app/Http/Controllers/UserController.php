@@ -82,7 +82,7 @@ class UserController extends Controller
             $user = User::findOrFail($id);
             $user->update($request->all());
 
-            return response()->json($user);
+            return new UserResource($user);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'code' => 404,
