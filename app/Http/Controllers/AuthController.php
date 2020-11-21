@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -72,7 +73,7 @@ class AuthController extends Controller
             return response()->json([
                 'code' => 401,
                 'message' => 'Unauthorized',
-                'description' => 'User unathorized.',
+                'description' => 'User unauthorized.',
             ], 401);
         }
 
@@ -108,9 +109,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json([
-            'data' => ['user' => Auth::user()]
-        ], 200);
+        return new UserResource(Auth::user());
     }
 
     /**
