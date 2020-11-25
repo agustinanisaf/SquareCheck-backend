@@ -11,7 +11,9 @@ use App\Http\Resources\StudentResource;
 use App\Http\Resources\SubjectResource;
 use App\Http\Resources\ScheduleResource;
 use App\Http\Resources\SubjectAttendanceResource;
+use App\Models\Lecturer;
 use App\Models\Schedule;
+use Illuminate\Support\Facades\Gate;
 
 class SubjectController extends Controller
 {
@@ -24,10 +26,33 @@ class SubjectController extends Controller
      */
     public function index()
     {
-        $subject = Subject::when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
-            ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
+        try {
+            if (Gate::allows('admin')) {
+                $subject = Schedule::query();
+            } else if (Gate::allows('lecturer')) {
+                $lecturer = Lecturer::firstWhere('user_id', $this->user->id);
+                if ($lecturer == null)
+                    throw new ModelNotFoundException('Lecturer with User ID ' . $this->user->id . ' Not Found', 0);
 
-        return SubjectResource::collection($subject);
+                $subject = Subject::where('lecturer_id', $lecturer->id);
+            } else if (Gate::allows('student')) {
+                $student = Student::firstWhere('user_id', $this->user->id);
+                if ($student == null)
+                    throw new ModelNotFoundException('Student with User ID ' . $this->user->id . ' Not Found', 0);
+
+                $subject = Subject::where('classroom_id', $student->classroom_id);
+            }
+            $subject = $subject->when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+                ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
+
+            return SubjectResource::collection($subject);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'code' => 404,
+                'message' => 'Not Found',
+                'description' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**
@@ -144,8 +169,19 @@ class SubjectController extends Controller
     public function getAttendances(int $id)
     {
         try {
-            $schedules = Schedule::with('students')
-                ->where('subject_id', $id)
+            // TODO: Check Lecturer have access to schedule
+            if (Gate::any(['admin', 'lecturer'])) {
+                $schedules = Schedule::with('students');
+            } else if (Gate::allows('student')) {
+                $student = Student::firstWhere('user_id', $this->user->id);
+                if ($student == null) throw new ModelNotFoundException("Student not found.", 0);
+
+                $schedules = Schedule::with(['students' => function ($query) use ($student) {
+                    return $query->where('student_id', $student->id);
+                }]);
+            }
+
+            $schedules = $schedules->where('subject_id', $id)
                 ->when(['schedule', $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
                 ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
 
@@ -154,7 +190,7 @@ class SubjectController extends Controller
             return response()->json([
                 'code' => 404,
                 'message' => 'Not Found',
-                'description' => 'Subject ' . $id . ' not found.'
+                'description' => $e->getMessage(),
             ], 404);
         }
     }
