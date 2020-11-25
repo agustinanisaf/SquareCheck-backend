@@ -286,10 +286,10 @@ class ScheduleController extends Controller
                 } else if (Gate::allows('lecturer')) {
                     $lecturer = Lecturer::firstWhere('user_id', $this->user->id);
                     if ($lecturer == null) throw new ModelNotFoundException("Lecturer not found.", 0);
-                    $schedules = Schedule::whereIn('subject_id', $lecturer->subjects);
+                    $schedules = Schedule::whereIn('subject_id', $lecturer->subjects->pluck('id')->toArray());
                 }
 
-                $schedules->withCount(['students as hadir' => function ($query) {
+                $schedules = $schedules->withCount(['students as hadir' => function ($query) {
                         $query->where('student_attendance.status', 'hadir');
                     }, 'students as izin' => function ($query) {
                         $query->where('student_attendance.status', 'izin');
