@@ -13,6 +13,7 @@ use App\Http\Resources\DepartmentStudentResource;
 use App\Http\Resources\LecturerResource;
 use App\Http\Resources\StudentResource;
 use App\Models\Lecturer;
+use App\Models\Subject;
 
 class DepartmentController extends Controller
 {
@@ -110,12 +111,7 @@ class DepartmentController extends Controller
 
     public function getAllStudents()
     {
-        $students = Student::select('department_id', DB::raw('count(*) as count'))
-            ->groupBy('department_id');
-
-        $departments = Department::joinSub($students, 'student', function ($join) {
-            $join->on('department.id', '=', 'student.department_id');
-        })
+        $departments = Department::withCount(['students as count'])
             ->when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
             ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
 
@@ -143,5 +139,14 @@ class DepartmentController extends Controller
                 'description' => 'Department ' . $id . ' not found.'
             ], 404);
         }
+    }
+
+    public function getAllSubjects()
+    {
+        $departments = Department::withCount(['subjects as count'])
+            ->when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+            ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
+
+        return DepartmentStudentResource::collection($departments);
     }
 }

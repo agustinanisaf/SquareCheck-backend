@@ -29,4 +29,9 @@ class Department extends Model
     {
         return $this->hasMany('App\Models\Classroom');
     }
+
+    public function subjects()
+    {
+        return $this->hasManyThrough('App\Models\Subject', 'App\Models\Classroom');
+    }
 }

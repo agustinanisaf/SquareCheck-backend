@@ -78,6 +78,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         });
 
         $router->group(['prefix' => 'departments', 'middleware' => 'role:admin'], function () use ($router) {
+            $router->get('subjects', [
+                'as' => 'department.getAllSubjects', 'uses' => 'DepartmentController@getAllSubjects'
+            ]);
+
             $router->get('students', [
                 'as' => 'department.getAllStudents', 'uses' => 'DepartmentController@getAllStudents'
             ]);
