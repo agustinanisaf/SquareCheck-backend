@@ -28,7 +28,7 @@ class SubjectController extends Controller
     {
         try {
             if (Gate::allows('admin')) {
-                $subject = Schedule::query();
+                $subject = Subject::query();
             } else if (Gate::allows('lecturer')) {
                 $lecturer = Lecturer::firstWhere('user_id', $this->user->id);
                 if ($lecturer == null)
