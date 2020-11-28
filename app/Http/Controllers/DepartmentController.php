@@ -7,13 +7,12 @@ use Illuminate\Http\Request;
 use App\Models\Department;
 use App\Models\Student;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\DB;
 use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\DepartmentStudentResource;
 use App\Http\Resources\LecturerResource;
 use App\Http\Resources\StudentResource;
+use App\Http\Resources\SubjectResource;
 use App\Models\Lecturer;
-use App\Models\Subject;
 
 class DepartmentController extends Controller
 {
@@ -148,5 +147,29 @@ class DepartmentController extends Controller
             ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
 
         return DepartmentStudentResource::collection($departments);
+    }
+
+    /**
+     * Display a listing of App\Models\Subject from App\Models\Department instances.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function getSubjects(int $id)
+    {
+        try {
+            $subjects = Department::findOrFail($id)
+                ->subjects()
+                ->when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
+                ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
+
+            return SubjectResource::collection($subjects);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'code' => 404,
+                'message' => 'Not Found',
+                'description' => 'Department ' . $id . ' not found.'
+            ], 404);
+        }
     }
 }
