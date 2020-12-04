@@ -17,8 +17,7 @@ class RoleMiddleware
     public function handle($request, Closure $next, $role)
     {
         // Pre-Middleware Action
-        $roles = explode(',', $role);
-        if (!$request->user()->can($roles)) {
+        if (!$request->user()->can($role)) {
             return response()->json([
                 'code' => 403,
                 'message' => 'Forbidden',

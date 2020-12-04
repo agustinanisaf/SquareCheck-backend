@@ -136,7 +136,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
             $router->get('{id}', [
                 'as' => 'schedule.show', 'uses' => 'ScheduleController@show',
-                'middleware' => 'role:lecturer,admin'
+                'middleware' => 'role:lecturer-admin'
             ]);
 
             $router->get('{id}/attendances', [
@@ -150,22 +150,22 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
             $router->delete('{id}/attendances', [
                 'as' => 'schedule.removeAttendances', 'uses' => 'ScheduleController@removeAttendances',
-                'middleware' => 'role:lecturer,admin'
+                'middleware' => 'role:lecturer-admin'
             ]);
 
             $router->post('{id}/attend', [
                 'as' => 'schedule.attend', 'uses' => 'ScheduleController@attend',
-                'middleware' => 'role:student,admin'
+                'middleware' => 'role:student-admin'
             ]);
 
             $router->post('{id}/open', [
                 'as' => 'schedule.open', 'uses' => 'ScheduleController@open',
-                'middleware' => 'role:lecturer,admin'
+                'middleware' => 'role:lecturer-admin'
             ]);
 
             $router->post('{id}/close', [
                 'as' => 'schedule.close', 'uses' => 'ScheduleController@close',
-                'middleware' => 'role:lecturer,admin'
+                'middleware' => 'role:lecturer-admin'
             ]);
         });
 
