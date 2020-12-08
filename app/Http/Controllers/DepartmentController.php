@@ -11,7 +11,7 @@ use App\Http\Resources\DepartmentResource;
 use App\Http\Resources\DepartmentStudentResource;
 use App\Http\Resources\LecturerResource;
 use App\Http\Resources\StudentResource;
-use App\Http\Resources\SubjectResource;
+use App\Http\Resources\DepartmentSubjectResource;
 use App\Models\Lecturer;
 
 class DepartmentController extends Controller
@@ -159,11 +159,9 @@ class DepartmentController extends Controller
     {
         try {
             $subjects = Department::findOrFail($id)
-                ->subjects()
-                ->when([$this->order_table, $this->orderBy], Closure::fromCallable([$this, 'queryOrderBy']))
-                ->when($this->limit, Closure::fromCallable([$this, 'queryLimit']));
+                ->subjects;
 
-            return SubjectResource::collection($subjects);
+            return DepartmentSubjectResource::collection($subjects);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'code' => 404,
