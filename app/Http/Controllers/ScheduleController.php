@@ -404,4 +404,33 @@ class ScheduleController extends Controller
             }
         }
     }
+
+    public function now()
+    {
+        if (Gate::allows('lecturer')) {
+            $lecturer = Lecturer::firstWhere('user_id', $this->user->id);
+
+            $schedule = Schedule::whereHas('subject', function (Builder $query) use ($lecturer) {
+                $query->where('lecturer_id', $lecturer->id);
+            })
+                ->whereDate('time', '<', Carbon::now())
+                ->whereNull('start_time')
+                ->orderBy('time', 'desc')
+                ->first();
+
+            return new ScheduleResource($schedule);
+        } elseif (Gate::allows('student')) {
+            $student = Student::firstWhere('user_id', $this->user->id);
+
+            $schedule = Schedule::whereHas('subject', function (Builder $query) use ($student) {
+                $query->where('classroom_id', $student->classroom_id);
+            })
+                ->whereDate('time', '<', Carbon::now())
+                ->whereNotNull('start_time')
+                ->orderBy('time', 'desc')
+                ->first();
+
+            return new ScheduleResource($schedule);
+        }
+    }
 }

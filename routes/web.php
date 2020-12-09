@@ -126,6 +126,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         });
 
         $router->group(['prefix' => 'schedules'], function () use ($router) {
+            $router->get('now', [
+                'as' => 'schedule.now', 'uses' => 'ScheduleController@now'
+            ]);
+
             $router->get('summarize', [
                 'as' => 'schedule.summarize', 'uses' => 'ScheduleController@summarize'
             ]);
