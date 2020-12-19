@@ -1,0 +1,29 @@
+FROM composer:2 as vendor
+
+COPY . .
+
+RUN composer install \
+    --ignore-platform-reqs \
+    --no-interaction \
+    --no-plugins \
+    --no-progress \
+    --no-dev \
+    --no-scripts \
+    --prefer-dist \
+    && find /app -type d -exec chmod -R 555 {} \; \
+    && find /app -type f -exec chmod -R 444 {} \; \
+    && find /app/storage -type d -exec chmod -R 755 {} \; \
+    && find /app/storage -type f -exec chmod -R 644 {} \;
+
+FROM existenz/webstack:7.3
+
+EXPOSE 80
+EXPOSE 443
+
+COPY --from=vendor --chown=php:nginx /app /www
+
+RUN apk -U --no-cache add \
+    php7 \
+    php7-json \
+    php7-mbstring \
+    php7-pdo_pgsql
