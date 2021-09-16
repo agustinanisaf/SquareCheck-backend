@@ -138,6 +138,11 @@ $router->group(['middleware' => 'auth:api'], function () use ($router) {
             'middleware' => 'role:lecturer-admin'
         ]);
 
+        $router->patch('{id}', [
+            'as' => 'schedule.update', 'uses' => 'ScheduleController@update',
+            'middleware' => 'role:admin'
+        ]);
+
         $router->get('{id}/attendances', [
             'as' => 'schedule.getAttendances', 'uses' => 'ScheduleController@getAttendances'
         ]);

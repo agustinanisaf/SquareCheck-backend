@@ -95,7 +95,26 @@ class ScheduleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'subject_id' => 'exists:subject,id',
+            'time' => 'date_format:"Y-m-d H:i:s"',
+            'start_time' => 'date_format:"Y-m-d H:i:s"',
+            'end_time' => 'date_format:"Y-m-d H:i:s"|after:start_time',
+        ]);
+
+        try {
+            $schedule = Schedule::findOrFail($id);
+            $schedule->fill($request->only(['subject_id', 'time', 'start_time', 'end_time']));
+            $schedule->save();
+
+            return new ScheduleResource($schedule);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'code' => 404,
+                'message' => 'Not Found',
+                'description' => 'Schedule ' . $id . ' not found.'
+            ], 404);
+        }
     }
 
     /**
